@@ -4,7 +4,7 @@ Lab 1
 Part A
 ------
 
-###Task 2
+### Task 2
 
 Logging into my system via my personal laptop, which is running the Mac OS X operating system, was actually more eventful than expected.
 
@@ -97,7 +97,7 @@ Onward to the next task.
 
 ---
 
-###Task 3
+### Task 3
 
 Pretty straightforward, let's go!
 
@@ -136,7 +136,7 @@ Explanations as follows:
 
 ---
 
-###Task 4
+### Task 4
 
 Let's create the two files!
 
@@ -254,7 +254,7 @@ And finally, Figure 4:
 
 ---
 
-###Task 5
+### Task 5
 
 Here is the table with my own personalised descriptions of all of the methods:
 
@@ -279,7 +279,7 @@ Since I was already familiarised with these commands, as well as some of their p
 
 ---
 
-###Task 7
+### Task 7
 
 Off we go!
 
