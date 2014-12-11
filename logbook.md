@@ -747,7 +747,7 @@ Everyone can read, write and execute. `rwxrwxrwx`.
 ```bash
 [vararut@meno ~]$ cd /usr/bin
 [vararut@meno bin]$ mkdir xyz
-mkdir: cannot create directory `xyz': Permission denied
+mkdir: cannot create directory xyz': Permission denied
 [vararut@meno bin]$
 ```
 
@@ -1164,3 +1164,512 @@ Connection to meno.lsbu.ac.uk closed.
 ```
 
 ---
+
+Lab 4
+=====
+
+Part A
+------
+
+### Task 2
+
+```bash
+[vararut@meno ~]$ rm -rf temp/*
+[vararut@meno ~]$ ll temp/
+total 0
+[vararut@meno ~]$
+```
+
+---
+
+### Task 3
+
+```bash
+[vararut@meno ~]$ cd temp/
+[vararut@meno temp]$ mkdir d1 d2 d3
+[vararut@meno temp]$ cp ../smallFile d1/
+[vararut@meno temp]$ ls -ilah d1/
+total 12K
+232364 drwxr-xr-x 2 vararut ustud 4.0K Dec 11 11:29 .
+232510 drwxr-xr-x 5 vararut ustud 4.0K Dec 11 11:29 ..
+232532 -rw-r--r-- 1 vararut ustud  150 Dec 11 11:29 smallFile
+[vararut@meno temp]$
+```
+
+---
+
+### Task 4
+
+```bash
+[vararut@meno d2]$ ln ../d1/smallFile smallFile.hard
+[vararut@meno d2]$ ls -ilah
+total 12K
+232529 drwxr-xr-x 2 vararut ustud 4.0K Dec 11 11:34 .
+232510 drwxr-xr-x 5 vararut ustud 4.0K Dec 11 11:29 ..
+232532 -rw-r--r-- 2 vararut ustud  150 Dec 11 11:29 smallFile.hard
+[vararut@meno d2]$ ls -ilah ../d1/
+total 12K
+232364 drwxr-xr-x 2 vararut ustud 4.0K Dec 11 11:29 .
+232510 drwxr-xr-x 5 vararut ustud 4.0K Dec 11 11:29 ..
+232532 -rw-r--r-- 2 vararut ustud  150 Dec 11 11:29 smallFile
+[vararut@meno d2]$
+```
+
+They are hard links to the same file because they have the same inode.
+
+---
+
+### Task 5
+
+```bash
+[vararut@meno ~]$ cat temp/d2/smallFile.hard
+John Doe	ECE	3.54	doe@jd.home.org		111.222.3333
+James Davis	ECE	3.71	davis@jd.work.org	111.222.1111
+Al Davis	CS	2.63	davis@a.lakers.org	111.222.2222
+[vararut@meno ~]$ ls -l smallFile
+-rw-r--r-- 1 vararut ustud 150 Dec 11 11:20 smallFile
+[vararut@meno ~]$ chmod 244 smallFile
+[vararut@meno ~]$ ls -l smallFile
+--w-r--r-- 1 vararut ustud 150 Dec 11 11:20 smallFile
+[vararut@meno ~]$ cat smallFile
+cat: smallFile: Permission denied
+[vararut@meno ~]$ cat temp/d2/smallFile.hard
+John Doe	ECE	3.54	doe@jd.home.org		111.222.3333
+James Davis	ECE	3.71	davis@jd.work.org	111.222.1111
+Al Davis	CS	2.63	davis@a.lakers.org	111.222.2222
+[vararut@meno ~]$ ls -l temp/d2/smallFile.hard
+-rw-r--r-- 2 vararut ustud 150 Dec 11 11:29 temp/d2/smallFile.hard
+[vararut@meno ~]$ chmod 644 smallFile
+[vararut@meno ~]$ ls -l smallFile
+-rw-r--r-- 1 vararut ustud 150 Dec 11 11:20 smallFile
+[vararut@meno ~]$ cat smallFile
+John Doe	ECE	3.54	doe@jd.home.org		111.222.3333
+James Davis	ECE	3.71	davis@jd.work.org	111.222.1111
+Al Davis	CS	2.63	davis@a.lakers.org	111.222.2222
+
+[vararut@meno ~]$ cp smallFile smallFile.bak
+[vararut@meno ~]$ rm smallFile
+[vararut@meno ~]$ cat temp/d2/smallFile.hard
+John Doe	ECE	3.54	doe@jd.home.org		111.222.3333
+James Davis	ECE	3.71	davis@jd.work.org	111.222.1111
+Al Davis	CS	2.63	davis@a.lakers.org	111.222.2222
+
+[vararut@meno ~]$
+```
+
+It makes sense, since while `~/smallFile` no longer has read permissions, a hard link pointing to the same inode can have a completely independent set of permissions.
+
+The file can still be displayed upon deleting one of its hard links. A file is considered completely deleted from the filesystem only when its number of hard links reaches 0.
+
+---
+
+### Task 6
+
+```bash
+[vararut@meno d2]$ ln smallFile.hard ../d1/smallFile
+[vararut@meno d2]$ ln -s ../d1/smallFile smallFile.soft
+[vararut@meno d2]$ ls -ilah
+total 12K
+232529 drwxr-xr-x 2 vararut ustud 4.0K Dec 11 11:59 .
+232510 drwxr-xr-x 5 vararut ustud 4.0K Dec 11 11:29 ..
+232532 -rw-r--r-- 2 vararut ustud  150 Dec 11 11:29 smallFile.hard
+232528 lrwxrwxrwx 1 vararut ustud   15 Dec 11 11:59 smallFile.soft -> ../d1/smallFile
+[vararut@meno d2]$
+```
+
+They are different files because they point to different inodes. The size of the symlink is only 15 bytes.
+
+---
+
+### Task 7
+
+```bash
+[vararut@meno d2]$ cat smallFile.soft
+John Doe	ECE	3.54	doe@jd.home.org		111.222.3333
+James Davis	ECE	3.71	davis@jd.work.org	111.222.1111
+Al Davis	CS	2.63	davis@a.lakers.org	111.222.2222
+
+[vararut@meno d2]$ chmod 244 ../d1/smallFile
+[vararut@meno d2]$ cat smallFile.soft
+cat: smallFile.soft: Permission denied
+[vararut@meno d2]$ chmod 644 ../d1/smallFile
+[vararut@meno d2]$ cat smallFile.soft
+John Doe	ECE	3.54	doe@jd.home.org		111.222.3333
+James Davis	ECE	3.71	davis@jd.work.org	111.222.1111
+Al Davis	CS	2.63	davis@a.lakers.org	111.222.2222
+
+[vararut@meno d2]$ cat smallFile.soft
+John Doe	ECE	3.54	doe@jd.home.org		111.222.3333
+James Davis	ECE	3.71	davis@jd.work.org	111.222.1111
+Al Davis	CS	2.63	davis@a.lakers.org	111.222.2222
+
+[vararut@meno d2]$ rm ../d1/smallFile
+[vararut@meno d2]$ cat smallFile.soft
+cat: smallFile.soft: No such file or directory
+[vararut@meno d2]$ ls
+smallFile.hard	smallFile.soft
+[vararut@meno d2]$
+```
+
+It makes sense, because a symbolic link is just a pointer to a specific address in the filesystem. If the other end dissapears, the filesystem reacts accordingly.
+
+---
+
+### Task 8
+
+Off we go!
+
+```bash
+[vararut@meno ~]$ exit
+logout
+Connection to meno.lsbu.ac.uk closed.
+➜  ~
+```
+
+---
+
+Lab 5
+=====
+
+Part A
+------
+
+### Task 2
+
+```bash
+[vararut@meno ~]$ ps -e -o uid,pid,ppid,pri,ni,cmd | grep inet
+0 15315     1  24   0 xinetd -stayalive -pidfile /var/run/xinetd.pid
+171224 16604 26685 21   0 grep inet
+[vararut@meno ~]$ ps -e -o uid,pid,ppid,pri,ni,cmd | grep sched
+171224 16612 26685 21   0 grep sched
+[vararut@meno ~]$ ps -e -o uid,pid,ppid,pri,ni,cmd | grep cron
+0  2727     1  24   0 crond
+171224 16615 26685 21   0 grep cron
+[vararut@meno ~]$ ps -e -o uid,pid,ppid,pri,ni,cmd | grep inetd
+0 15315     1  24   0 xinetd -stayalive -pidfile /var/run/xinetd.pid
+171224 16623 26685 21   0 grep inetd
+[vararut@meno ~]$
+```
+
+---
+
+### Task 3
+
+The parent for all of them is `root`.
+
+| Process  | PPID | Priority |
+|----------|------|----------|
+| `init`   | 1    | 24       |
+| `crond`  | 1    | 24       |
+| `xinetd` | 1    | 24       |
+
+---
+
+### Task 4
+
+`grep -v grep` used to eliminate extra entries.
+
+```bash
+[vararut@meno ~]$ ps aux | grep httpd | grep -cv grep
+9
+[vararut@meno ~]$ ps -e -o pid,cmd | grep httpd | grep -v grep
+2577 /usr/sbin/httpd
+2578 /usr/sbin/httpd
+2579 /usr/sbin/httpd
+2580 /usr/sbin/httpd
+2581 /usr/sbin/httpd
+2582 /usr/sbin/httpd
+2583 /usr/sbin/httpd
+2589 /usr/sbin/httpd
+22710 /usr/sbin/httpd
+[vararut@meno ~]$
+```
+
+---
+
+### Task 5
+
+```bash
+[vararut@meno ~]$ ps aux | grep -w "/bin/.*sh" | grep -v grep
+root      2554  0.0  0.0  65900  1252 ?        S    Aug21   0:00 /bin/sh /usr/bin/mysqld_safe --defaults-file=/etc/my.cnf --pid-file=/var/run/mysqld/mysqld.pid --log-error=/var/log/mysqld.log
+root      2605  0.0  0.0  65900  1300 ?        S    Aug21  28:42 /bin/bash /usr/local/cams2/bin/cams_watcher.sh
+[vararut@meno ~]$
+```
+
+---
+
+### Task 6
+
+```bash
+top - 15:22:55 up 112 days,  2:41,  5 users,  load average: 0.02, 0.03, 0.00
+Tasks: 129 total,   1 running, 122 sleeping,   6 stopped,   0 zombie
+Cpu(s):  0.3%us,  0.5%sy,  0.0%ni, 99.0%id,  0.0%wa,  0.2%hi,  0.0%si,  0.0%st
+Mem:   3735588k total,  3688652k used,    46936k free,  1467928k buffers
+Swap:  2040212k total,      104k used,  2040108k free,  1028888k cached
+
+PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+19748 vararut   15   0 12716 1072  792 R    1  0.0   0:00.65 top
+2584 mysql     15   0  675m 106m 4372 S    0  2.9  39:55.50 mysqld
+2605 root      18   0 65900 1300 1040 S    0  0.0  28:42.98 cams_watcher.sh
+26684 vararut   15   0 97.9m 2172 1244 S    0  0.1   0:01.16 sshd
+1 root      15   0 10312  684  568 S    0  0.0   0:20.31 init
+2 root      RT   0     0    0    0 S    0  0.0  33:51.07 migration/0
+3 root      34  19     0    0    0 S    0  0.0   0:02.19 ksoftirqd/0
+4 root      RT   0     0    0    0 S    0  0.0   0:01.10 watchdog/0
+5 root      RT   0     0    0    0 S    0  0.0  20:24.08 migration/1
+6 root      34  19     0    0    0 S    0  0.0   0:02.94 ksoftirqd/1
+7 root      RT   0     0    0    0 S    0  0.0   0:01.36 watchdog/1
+8 root      10  -5     0    0    0 S    0  0.0  76:07.80 events/0
+9 root      10  -5     0    0    0 S    0  0.0   3:14.90 events/1
+10 root      10  -5     0    0    0 S    0  0.0   0:00.00 khelper
+41 root      16  -5     0    0    0 S    0  0.0   0:00.00 kthread
+46 root      10  -5     0    0    0 S    0  0.0   0:07.14 kblockd/0
+47 root      10  -5     0    0    0 S    0  0.0   0:04.43 kblockd/1
+48 root      14  -5     0    0    0 S    0  0.0   0:00.00 kacpid
+```
+
+`top` refreshes once every 3 seconds. 1 running process, 122 sleeping.
+
+---
+
+### Task 8
+
+```bash
+[vararut@meno ~]$ sleep 3600 && echo "Time for Lunch\!" &
+[1] 19956
+[vararut@meno ~]$
+```
+
+---
+
+### Task 9
+
+```bash
+[vararut@meno ~]$ find ~ -name "foobar" 1>find.out 2>/dev/null & sort -nrk4 smallFile 1>sort.out 2>/dev/null &
+[1] 22999
+[2] 22300
+[vararut@meno ~]$ ll
+total 20
+-rw-r--r-- 1 vararut ustud    0 Dec 11 21:03 find.out
+drwxr-xr-x 4 vararut ustud 4096 Dec 11 11:18 personal
+drwxr-xr-x 4 vararut ustud 4096 Dec 11 11:18 professional
+-rw-r--r-- 1 vararut ustud  150 Dec 11 11:47 smallFile
+-rw-r--r-- 1 vararut ustud  150 Dec 11 21:03 sort.out
+drwxr-xr-x 5 vararut ustud 4096 Dec 11 11:29 temp
+[vararut@meno ~]$ cat find.out
+[vararut@meno ~]$ cat sort.out
+James Davis	ECE	3.71	davis@jd.work.org	111.222.1111
+John Doe	ECE	3.54	doe@jd.home.org		111.222.3333
+Al Davis	CS	2.63	davis@a.lakers.org	111.222.2222
+
+[vararut@meno ~]$
+```
+
+---
+
+### Task 10
+
+```bash
+[vararut@meno ~]$ kill 12345
+-bash: kill: (12345) - No such process
+[vararut@meno ~]$ kill %2
+-bash: kill: %2: no such job
+[vararut@meno ~]$
+```
+
+---
+
+### Task 11
+
+```bash
+[vararut@meno ~]$ date & uname -a & who & ps &
+[1] 23108
+[2] 23109
+[3] 23110
+[4] 23111
+Thu Dec 11 21:10:00 GMT 2014
+Linux meno.lsbu.ac.uk 2.6.18-53.el5 #1 SMP Wed Oct 10 16:34:19 EDT 2007 x86_64 x86_64 x86_64 GNU/Linux
+-bash: echo: write error: Interrupted system call
+[1]   Done                    date
+[vararut@meno ~]$ sagayarl pts/11       2014-12-11 13:15 (0543f9f8.skybroadband.com)
+richj3   pts/12       2014-12-11 20:36 (cpc2-slam6-2-0-cust66.2-4.cable.virginm.net)
+gharibr  pts/15       2014-12-11 15:34 (bus-2402603.lsbu.ac.uk)
+sekyewaj pts/17       2014-12-11 10:06 (90.198.211.30)
+vararut  pts/18       2014-12-11 20:57 (188.226.201.122)
+PID TTY          TIME CMD
+22440 pts/18   00:00:00 bash
+23111 pts/18   00:00:00 ps
+
+[2]   Done                    uname -a
+[3]-  Done                    who
+[4]+  Done                    ps
+[vararut@meno ~]$
+```
+
+---
+
+### Task 12
+
+```bash
+[vararut@meno ~]$ find / -inum 123456 1>find.out 2>/dev/null &
+[1] 23194
+[vararut@meno ~]$ kill %%
+[1]+  Terminated              find / -inum 123456 > find.out 2> /dev/null
+[vararut@meno ~]$ find ~ -inum 123456 1>find.out 2>/dev/null &
+[1] 23200
+[vararut@meno ~]$
+```
+
+---
+
+### Task 13
+
+```bash
+[vararut@meno ~]$ pstree
+init─┬─acpid
+     ├─atd
+     ├─auditd─┬─python
+     │        └─{auditd}
+     ├─cams_watcher.sh───sleep
+     ├─crond
+     ├─dbus-daemon
+     ├─events/0
+     ├─events/1
+     ├─13*[free]
+     ├─gdm-binary───gdm-binary─┬─Xorg
+     │                         └─gdmgreeter
+     ├─generate
+     ├─gpm
+     ├─hald───hald-runner─┬─hald-addon-acpi
+     │                    ├─hald-addon-keyb
+     │                    └─hald-addon-stor
+     ├─hcid
+     ├─httpd───8*[httpd]
+     ├─irqbalance
+     ├─jsvc───jsvc───18*[{jsvc}]
+     ├─khelper
+     ├─klogd
+     ├─krfcommd
+     ├─ksoftirqd/0
+     ├─ksoftirqd/1
+     ├─kthread─┬─aio/0
+     │         ├─aio/1
+     │         ├─ata/0
+     │         ├─ata/1
+     │         ├─ata_aux
+     │         ├─cqueue/0
+     │         ├─cqueue/1
+     │         ├─kacpid
+     │         ├─kauditd
+     │         ├─kblockd/0
+     │         ├─kblockd/1
+     │         ├─khubd
+     │         ├─5*[kjournald]
+     │         ├─kmpathd/0
+     │         ├─kmpathd/1
+     │         ├─kpsmoused
+     │         ├─kseriod
+     │         ├─kswapd0
+     │         ├─2*[pdflush]
+     │         ├─scsi_eh_0
+     │         └─vmmemctl
+     ├─ls
+     ├─migration/0
+     ├─migration/1
+     ├─6*[mingetty]
+     ├─mysqld_safe───mysqld───17*[{mysqld}]
+     ├─ntpd
+     ├─portmap
+     ├─sdpd
+     ├─2*[sendmail]
+     ├─sshd─┬─sshd───sshd───bash───4*[generate]
+     │      ├─sshd───sshd───bash
+     │      ├─sshd───sshd───bash───mysql
+     │      ├─sshd───sshd───bash─┬─more
+     │      │                    ├─rusers
+     │      │                    └─4*[telnet]
+     │      └─sshd───sshd───bash───pstree
+     ├─syslogd
+     ├─udevd
+     ├─vmtoolsd
+     ├─watchdog/0
+     ├─watchdog/1
+     ├─xfs
+     ├─xinetd
+     └─yum-updatesd
+[vararut@meno ~]$
+```
+
+---
+
+### Task 14
+
+```bash
+[vararut@meno ~]$ ps -o pid,ppid,pgid,sid,comm
+PID  PPID  PGID   SID COMMAND
+22440 22438 22440 22440 bash
+23397 22440 23397 22440 ps
+[vararut@meno ~]$
+```
+
+---
+
+### Task 15
+
+```bash
+[vararut@meno ~]$ ps -o pid,ppid,pgid,sid,comm &
+[1] 23428
+[vararut@meno ~]$   PID  PPID  PGID   SID COMMAND
+22440 22438 22440 22440 bash
+23428 22440 23428 22440 ps
+
+[1]+  Done                    ps -o pid,ppid,pgid,sid,comm
+[vararut@meno ~]$
+```
+
+---
+
+### Task 16
+
+Off we go!
+
+```bash
+[vararut@meno ~]$ exit
+logout
+Connection to meno.lsbu.ac.uk closed.
+➜  ~
+```
+
+---
+
+Lab 6
+=====
+
+### Task 1
+
+Good examples of multithreading:
+
+1.	Strategy games that can run the rendering logic independently from the AI pathing algorithms. E.g. Starcraft 2.
+
+2.	Video rendering applications, as each frame can be rendered individually. E.g. Final Cut Pro.
+
+Single-threaded applications:
+
+1.	Node.js uses a single-threaded event loop and handles I/O with asynchronous callbacks.
+
+2.	Applications that perform simple calculations on small sample sizes. E.g. a tax calculator.
+
+---
+
+Lab 7
+=====
+
+The `hello.sh` command does not work since the current directory is not part of the shell `$PATH`. As such, the shell is not taking it into consideration when considering valid program names. To get the example to work, `./hello.sh` should do the trick.
+
+```bash
+[vararut@meno ~]$ vi hashcheck.pl
+[vararut@meno ~]$ perl hashcheck.pl
+This is a hash character: #
+This is a print statement...
+[vararut@meno ~]$
+```
