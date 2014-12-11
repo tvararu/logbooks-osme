@@ -645,3 +645,522 @@ Please note that web pages should be located in your .public_html folder and any
 Running `man ls` changes the value of `LINES` back to `25`. So, still `25`.
 
 ---
+
+Lab 2
+=====
+
+Part A
+------
+
+### Task 7
+
+> What does the abbreviation pwd stand for?
+
+`pwd` stands for `print working directory`.
+
+---
+
+### Task 8
+
+> What does the output of the pwd command represent with respect to the location of the root directory in the Linux file system hierarchy?
+
+It represents a location string starting from the filesystem root, `/`.
+
+---
+
+### Task 9
+
+> What does the abbreviation `cd` stand for?
+
+Change directory.
+
+---
+
+### Task 10
+
+> What does the result of the `cd ..` command represent with respect to the location of the previous directory location in the Linux file system hierarchy?
+
+`cd ..` takes you up one directory in the filesystem hierarchy.
+
+---
+
+### Task 11
+
+> Which directory in the Linux file system does the `cd /` command take you to?
+
+The root.
+
+---
+
+### Task 12
+
+> Which directory in the Linux file system does the `cd` command take you to?
+
+Your home folder.
+
+---
+
+### Task 13
+
+> Is it obvious what the `touch` command is designed to do?
+
+Intuitive, but not exactly obvious.
+
+---
+
+### Task 14
+
+> Type `man touch` and press the Enter key. What does the MAN page for `touch` say about the purpose of this command?
+
+"Change file timestamps".
+
+---
+
+### Task 15
+
+> What are the permissions assigned to users and groups for `file1`?
+
+Read/Write for the owner (me), Read for my group, Read for global. `rw-r--r--`.
+
+---
+
+### Task 16
+
+> What are the new `file1` permissions for users and groups?
+
+Everyone can read, write and execute. `rwxrwxrwx`.
+
+---
+
+### Task 17
+
+> Are these permissions reasonable for `file1`?
+
+`777` is generally never reasonable, and a crutch used in cases where proper permissions are misunderstood.
+
+---
+
+### Task 18
+
+> Why is it not possible for you to create the xyz directory in the `/usr/bin` directory?
+
+```bash
+[vararut@meno ~]$ cd /usr/bin
+[vararut@meno bin]$ mkdir xyz
+mkdir: cannot create directory `xyz': Permission denied
+[vararut@meno bin]$
+```
+
+Permission denied.
+
+---
+
+### Task 19
+
+> Which character in the listing displayed after typing `ls -l` indicates that xyz is a directory?
+
+The `d` at the start.
+
+---
+
+### Task 20
+
+> Why was it not possible to delete the subfiles directory?
+
+`rmdir` will not work on non-empty directories, to prevent accidental misuse.
+
+---
+
+### Task 21
+
+> How does the output of the `ls` command differ from that of the `ls -l` command?
+
+`-l` switches to a long listing format, with more information.
+
+---
+
+### Task 22
+
+> A file listing for which directory is displayed after typing `ls /` ?
+
+The root directory.
+
+```bash
+[vararut@meno ~]$ ls /
+bin   etc   lib64	misc  opt   save     srv  tom	 usr
+boot  home  lost+found	mnt   proc  sbin     sys  user	 var
+dev   lib   media	net   root  selinux  tmp  users
+[vararut@meno ~]$
+```
+
+---
+
+### Task 23
+
+> Which files in your home directory are listed after typing `ls A*.txt`? What do these files have in common?
+
+They all start with the prefix `A` and end in `.txt`.
+
+---
+
+### Task 24
+
+> Explain the error messages that are displayed after typing the `ls` and `mv` commands.
+
+`ls` will return that there is no such file or directory.
+
+`mv` will return permission denied for each affected file.
+
+---
+
+### Task 25
+
+> Which account could perform the `mv` command without getting the error message?
+
+The root user.
+
+---
+
+### Task 26
+
+> Procedurally, how does copying a file differ from moving a file?
+
+`cp` creates a new inode while moving a file just switches a pointer. Moving/renaming is atomic, while copying takes time.
+
+---
+
+### Task 27
+
+> What additional feature does the `rm -i` command offer over the rm command?
+
+It makes the `rm` command interactive, prompting for user confirmation.
+
+---
+
+### Task 28
+
+> What output is produced for the command `cat mlist` ?
+
+```bash
+[vararut@meno ~]$ ls
+file1  mlist  xyz
+[vararut@meno ~]$ ls > mlist
+[vararut@meno ~]$ echo "This is the last line of the file" >> mlist
+[vararut@meno ~]$ cat mlist
+file1
+mlist
+xyz
+This is the last line of the file
+[vararut@meno ~]$
+```
+
+This is because the `ls > mlist` redirection will overwrite the file, and then the `echo >> mlist` redirection will append the last line.
+
+---
+
+### Task 29
+
+> Assume the previous paragraph is stored in a file called `textfile3.rtf`. What would be the output for the following `grep` command? `grep -c "Data" textfile3.rtf`
+
+```bash
+[vararut@meno ~]$ echo "For example, the command grep "ACK" ftpSummaryLarge.rtf displays only those lines in the ftpSummaryLarge.rtf file that contain the key word ACK. Grep can also be used to determine how many lines in a given file contain a specific keyword. For example, one may wish to know the number of packets exchanged during a data transfer between two computers that meets a specific condition, such as the number of packets that contain application data. Issuing a command such as grep -c "Data" tftpSummaryLarge.rtf, would instantly reduce a potentially large file into a single value that represents the number of data packets transferred." > textfile3.rtf
+[vararut@meno ~]$ grep -c "Data" textfile3.rtf
+1
+[vararut@meno ~]$
+```
+
+---
+
+Lab 3
+=====
+
+Part A
+------
+
+### Task 2
+
+```bash
+[vararut@meno ~]$ mkdir -p temp personal/funstuff personal/taxes professional/societies/ieee professional/societies/acm professional/courses/general professional/courses/major/cs475 professional/courses/major/cs381/programs professional/courses/major/cs381/labs professional/courses/major/cs381/notes professional/courses/major/cs213
+[vararut@meno ~]$ tree
+.
+|-- personal
+|   |-- funstuff
+|   `-- taxes
+|-- professional
+|   |-- courses
+|   |   |-- general
+|   |   `-- major
+|   |       |-- cs213
+|   |       |-- cs381
+|   |       |   |-- labs
+|   |       |   |-- notes
+|   |       |   `-- programs
+|   |       `-- cs475
+|   `-- societies
+|       |-- acm
+|       `-- ieee
+`-- temp
+
+17 directories, 0 files
+[vararut@meno ~]$
+```
+
+---
+
+### Task 3
+
+```bash
+[vararut@meno ~]$ pwd
+/users/std/stud/v/va/vararut
+[vararut@meno ~]$
+```
+
+---
+
+### Task 4
+
+Path to home directory:
+
+```bash
+[vararut@meno courses]$ cd
+[vararut@meno ~]$ pwd
+/users/std/stud/v/va/vararut
+[vararut@meno ~]$
+```
+
+Path to `acm` directory:
+
+```bash
+[vararut@meno ~]$ cd professional/societies/acm/
+[vararut@meno acm]$ pwd
+/users/std/stud/v/va/vararut/professional/societies/acm
+[vararut@meno acm]$
+```
+
+Two relative pathnames:
+
+```bash
+[vararut@meno courses]$ pwd
+/users/std/stud/v/va/vararut/professional/courses
+[vararut@meno courses]$ ls ../societies/acm/
+[vararut@meno courses]$ ls ~/professional/societies/acm/
+[vararut@meno courses]$
+```
+
+---
+
+### Task 5
+
+```bash
+[vararut@meno ~]$ cd /usr
+[vararut@meno usr]$ ll
+total 344
+drwxr-xr-x   2 root root 69632 Sep 28 15:40 bin
+drwxr-xr-x   2 root root  4096 Oct 10  2006 etc
+drwxr-xr-x   2 root root  4096 Oct 10  2006 games
+drwxr-xr-x 129 root root 12288 Aug 13  2010 include
+drwxr-xr-x   5 root root  4096 Dec 10  2010 java
+drwxr-xr-x   6 root root  4096 Sep 11  2007 kerberos
+drwxr-xr-x  79 root root 65536 Nov  3  2011 lib
+drwxr-xr-x  90 root root 69632 Nov  7  2011 lib64
+drwxr-xr-x  10 root root  4096 Mar  4  2008 libexec
+drwxr-xr-x  16 root root  4096 Dec 10  2010 local
+drwxr-xr-x   2 root root 20480 Jul 11 12:46 sbin
+drwxr-xr-x 208 root root  4096 Aug 13  2010 share
+drwxr-xr-x   4 root root  4096 Mar  4  2008 src
+drwx--x--x   3 tftp bin   4096 Sep 16  2008 tftpdir
+lrwxrwxrwx   1 root root    10 Mar  4  2008 tmp -> ../var/tmp
+drwxr-xr-x   2 root root  4096 Jun 21  2010 users
+drwxr-xr-x   3 root root  4096 Mar  4  2008 X11R6
+[vararut@meno usr]$ ls | wc -l
+17
+[vararut@meno usr]$
+```
+
+There are 17, through `ls | wc -l`. They are all directories, except for `tmp` which is a symlink.
+
+---
+
+### Task 6
+
+```bash
+[vararut@meno ~]$ pwd
+/users/std/stud/v/va/vararut
+[vararut@meno ~]$ ls /usr/bin/ | wc -l
+2328
+[vararut@meno ~]$
+```
+
+---
+
+### Task 7
+
+```bash
+[vararut@meno ~]$ cat /etc/motd
+################################################################################
+Unauthorised access is prohibited
+
+NOTE: meno now supports https. To develope a https site create a .private_html directory and then run wwwset to set the correct permissions viz
+
+$ cd
+$ mkdir .private_html
+$ wwwset
+
+By putting content into .private_html you make now view it at https://mypages.lsbu.ac.uk/~username
+
+
+Non-https  personal web pages are still available on this server using the URL
+http://mypages.lsbu.ac.uk/~username
+
+STUDENT personal web pages are only visible on-campus. If you are developing a web site and wish to view it from off campus you will need to connect to the VPN first. Details can be found at
+http://www.lsbu.ac.uk/ict/services/vpn.shtml
+
+Please note that web pages should be located in your .public_html folder and any PHP scripts you develop should be located in your .public_html/cgi-bin folder
+###############################################################################
+
+[vararut@meno ~]$
+```
+
+---
+
+### Task 8
+
+```bash
+[vararut@meno ~]$ cat /etc/passwd | grep vararut
+vararut:x:171224:219:Theodor Vararu, Student,:/users/std/stud/v/va/vararut:/bin/bash
+[vararut@meno ~]$
+```
+
+| User name | User ID | Group ID | Personal Information    | Home Directory                 | Login Shell |
+|-----------|---------|----------|-------------------------|--------------------------------|-------------|
+| `vararut` | 171224  | 219      | Theodor Vararu, Student | `/users/std/stud/v/va/vararut` | `/bin/bash` |
+
+---
+
+### Task 9
+
+```bash
+[vararut@meno ~]$ cd /boot/
+[vararut@meno boot]$ ll
+total 7897
+-rw-r--r-- 1 root root   61583 Oct 10  2007 config-2.6.18-53.el5
+drwxr-xr-x 2 root root    1024 Apr  8  2011 grub
+-rw------- 1 root root 2547073 Jul 11 12:46 initrd-2.6.18-53.el5.img
+-rw-r--r-- 1 root root 2334422 Mar  4  2008 initrd-2.6.18-53.el5kdump.img
+drwx------ 2 root root   12288 Mar  4  2008 lost+found
+-rw-r--r-- 1 root root   88644 Oct 10  2007 symvers-2.6.18-53.el5.gz
+-rw-r--r-- 1 root root 1150812 Oct 10  2007 System.map-2.6.18-53.el5
+-rw-r--r-- 1 root root 1844028 Oct 10  2007 vmlinuz-2.6.18-53.el5
+[vararut@meno boot]$
+```
+
+`vmlinuz-2.6.18-53.el5`\.
+
+---
+
+### Task 10
+
+There are no `.profile` or `.login` files in the home directory for this particular user configuration. Rather, there is a `.bash_profile` file in the home directory:
+
+```bash
+[vararut@meno ~]$ cat .bash_profile | head -n 5
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+  . ~/.bashrc
+[vararut@meno ~]$
+```
+
+---
+
+### Task 11
+
+```bash
+[vararut@meno ~]$ ls -lah
+total 84K
+drwx--x--x    4 vararut ustud 4.0K Dec 11 01:35 .
+drwxr-xr-x  186 root    root  4.0K Nov 25 20:03 ..
+-rw-------    1 vararut ustud 3.5K Dec 11 00:01 .bash_history
+-rw-r--r--    1 vararut ustud   24 Aug 22 12:03 .bash_logout
+-rw-r--r--    1 vararut ustud  178 Aug 22 12:03 .bash_profile
+-rw-r--r--    1 vararut ustud  124 Aug 22 12:03 .bashrc
+-rw-r--r--    1 vararut ustud  515 Aug 22 12:03 .emacs
+drwxr-xr-x    3 vararut ustud 4.0K Aug 22 12:03 .kde
+-rw-------    1 vararut ustud   65 Dec 11 01:35 .lesshst
+drwxrws--T+   3 root    www   4.0K Aug 22 12:03 .public_html
+-rw-------    1 vararut ustud    8 Sep 25 15:13 .sh_history
+-rw-------    1 vararut ustud 3.6K Sep 25 14:20 .viminfo
+-rw-r--r--    1 vararut ustud  22K Sep 25 14:14 .zcompdump
+-rw-r--r--    1 vararut ustud  658 Sep 25 14:21 .zshrc
+-rw-r--r--    1 vararut ustud  658 Sep 25 14:18 .zshrc-old
+[vararut@meno ~]$
+```
+
+---
+
+### Task 12
+
+```bash
+[vararut@meno ~]$ ls -il
+total 12
+232512 drwxr-xr-x  4 vararut ustud 4096 Dec 11 01:43 personal
+232515 drwxr-xr-x  4 vararut ustud 4096 Dec 11 01:43 professional
+232510 drwxr-xr-x  2 vararut ustud 4096 Dec 11 01:43 temp
+[vararut@meno ~]$ ls -ila /
+total 218
+     2 drwxr-xr-x 29 root    root  4096 Dec 11 01:05 .
+[vararut@meno ~]$
+```
+
+---
+
+### Task 13
+
+```bash
+[vararut@meno ~]$ ls -ilah /boot/vmlinuz-2.6.18-53.el5
+15 -rw-r--r-- 1 root root 1.8M Oct 10  2007 /boot/vmlinuz-2.6.18-53.el5
+[vararut@meno ~]$ more /boot/vmlinuz-2.6.18-53.el5
+
+******** /boot/vmlinuz-2.6.18-53.el5: Not a text file ********
+
+[vararut@meno ~]$
+```
+
+---
+
+### Task 14
+
+```bash
+[vararut@meno labs]$ ls -ilah lab1
+232528 -rw-r--r-- 1 vararut ustud 0 Dec 11 01:47 lab1
+[vararut@meno labs]$
+```
+
+---
+
+### Task 15
+
+```bash
+[vararut@meno ~]$ ls /usr/include/sys/t*.h
+/usr/include/sys/termios.h  /usr/include/sys/timex.h
+/usr/include/sys/timeb.h    /usr/include/sys/ttychars.h
+/usr/include/sys/time.h     /usr/include/sys/ttydefaults.h
+/usr/include/sys/times.h    /usr/include/sys/types.h
+[vararut@meno ~]$
+```
+
+---
+
+### Task 16
+
+Off we go!
+
+```bash
+[vararut@meno ~]$ exit
+logout
+Connection to meno.lsbu.ac.uk closed.
+➜  ~
+```
+
+---
