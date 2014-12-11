@@ -10,25 +10,23 @@ Logging into my system via my personal laptop, which is running the Mac OS X ope
 
 Since I know that OS X ships with a preinstalled version of OpenSSH, I went straight to my terminal and fired the command:
 
-> *Note:* `➜  ~` is the `$PROMPT` from my terminal theme, which is part of the popular **oh-my-zsh** (https://github.com/robbyrussell/oh-my-zsh) Z Shell configuration pack. The first character is a stylistic unicode arrow, while the second character is my CWD. In this case, `~`, the home directory.
-
 ```bash
-➜  ~  uname -a
+$ uname -a
 Darwin Theodors-MacBook-Air.local 14.0.0 Darwin Kernel Version 14.0.0: Fri Sep 19 00:26:44 PDT 2014; root:xnu-2782.1.97~2/RELEASE_X86_64 x86_64
-➜  ~  ssh vararut@meno.lsbu.ac.uk
+$ ssh vararut@meno.lsbu.ac.uk
 ssh: connect to host meno.lsbu.ac.uk port 22: Operation timed out
-➜  ~
+$
 ```
 
 Well, now that's not a promising start. First idea: are ports blocked?
 
 ```bash
-➜  ~  ssh $arcturus
+$ ssh $arcturus
 Welcome to Ubuntu 12.04.4 LTS (GNU/Linux 3.2.0-60-virtual i686)
 
 * Documentation:  https://help.ubuntu.com/
 Last login: Wed Dec 10 03:02:44 2014 from 136.148.10.8
-➜  ~
+$
 ```
 
 Looks like they are not, as SSHing through port 22 on one of my own GNU/Linux boxes works unhitched.
@@ -36,9 +34,9 @@ Looks like they are not, as SSHing through port 22 on one of my own GNU/Linux bo
 > *Note:* my password was not requested for the login as I have set this machine up with my public RSA key.
 
 ```bash
-➜  ~  uname -a
+$ uname -a
 Linux blog.vararu.org 3.2.0-60-virtual #91-Ubuntu SMP Wed Feb 19 04:35:08 UTC 2014 i686 i686 i386 GNU/Linux
-➜  ~  ssh vararut@meno.lsbu.ac.uk
+$ ssh vararut@meno.lsbu.ac.uk
 Warning : Unauthorised Access Prohibited
 
 vararut@meno.lsbu.ac.uk\'s password:
@@ -47,20 +45,20 @@ vararut@meno.lsbu.ac.uk\'s password:
 Interesting! My GNU/Linux box can get through just fine, and proceeds to the SSH password prompt. Investigating further, and running the ssh command in verbose mode via `ssh -v`, reveals that my OS X machine is choking before it can even form a connection:
 
 ```bash
-➜  ~  ssh -v vararut@meno.lsbu.ac.uk
+$ ssh -v vararut@meno.lsbu.ac.uk
 OpenSSH_6.2p2, OSSLShim 0.9.8r 8 Dec 2011
 debug1: Reading configuration data /etc/ssh_config
 debug1: /etc/ssh_config line 103: Applying options for *
 debug1: Connecting to meno.lsbu.ac.uk [136.148.76.159] port 22.
 debug1: connect to address 136.148.76.159 port 22: Operation timed out
 ssh: connect to host meno.lsbu.ac.uk port 22: Operation timed out
-➜  ~
+$
 ```
 
 I've tried other avenues of investigation to figure out what the root cause is, but after coming up empty-handed I decided to skip to the exercise itself, since my GNU/Linux box can connect just fine:
 
 ```bash
-➜  ~  ssh vararut@meno.lsbu.ac.uk
+$ ssh vararut@meno.lsbu.ac.uk
 Warning : Unauthorised Access Prohibited
 
 vararut@meno.lsbu.ac.uk\'s password:
