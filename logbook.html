@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="bower_components/normalize.css/normalize.css">
+    <style>
+      body {
+        color: #3A3A3A;
+        font-weight: 400;
+        font-family: "Open Sans";
+        font-size: 16px;
+        line-height: 1.25;
+        margin: 0 auto;
+        padding: 20px;
+        width: 800px;
+      }
+      h1, h2, h3, p {
+        margin: 0;
+      }
+      h1 {
+        font-size: 2em;
+        margin: 20px 0;
+        padding-top: 20px;
+      }
+      h2 {
+        font-size: 1.5em;
+        line-height: 40px;
+        margin: 20px 0;
+      }
+      h3 {
+        font-size: 1.25em;
+        line-height: 40px;
+      }
+      p {
+        margin: 20px 0;
+      }
+      pre {
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        background: white;
+        color: #383F56;
+        margin: 20px 0;
+        padding: 20px;
+      }
+      pre, code {
+        font-family: "Courier New";
+        word-wrap: break-word;
+      }
+      pre .kw {
+        font-weight: 600;
+      }
+      pre .co {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      blockquote {
+        border-left: 5px solid #383F56;
+        margin-left: 0;
+        padding-left: 15px;
+      }
+      hr {
+        border-top-width: 1px;
+        border-color: #383F56;
+        margin: 19px 0;
+      }
+      table th, table td {
+        padding: 10px 5px;
+      }
+      table th:first-child, table td:first-child {
+        padding-left: 0;
+      }
+      @media print {
+        h1 {
+          page-break-before: always;
+        }
+      }
+      ul {
+        margin: 20px 0;
+      }
+      ul.unstyled {
+        list-style-type: none;
+        padding: 0;
+      }
+      ul.unstyled li {
+        margin: 20px 0;
+      }
+      .cover h2 {
+        font-weight: 300;
+      }
+      a:visited, a:focus {
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body>
+  <div class="cover">
+    <h2>Logbook - Operating Systems and Multi-Media Engineering</h2>
+    <h2>Theodor Vararu - 3329393</h2>
+    <ul class="unstyled">
+      <li>Lab 1 - Page 2</li>
+      <li>Lab 2 - Page 16</li>
+      <li>Lab 3 - Page 21</li>
+      <li>Lab 4 - Page 27</li>
+      <li>Lab 5 - Page 30</li>
+      <li>Lab 6 - Page 36</li>
+      <li>Lab 7 - Page 37</li>
+    </ul>
+    <p>Source code at <a href="https://github.com/tvararu/logbooks-osme">https://github.com/tvararu/logbooks-osme</a>.</p>
+  </div>
+<h1 id="lab-1">Lab 1</h1>
+<h2 id="part-a">Part A</h2>
+<h3 id="task-2">Task 2</h3>
+<p>Logging into my system via my personal laptop, which is running the Mac OS X operating system, was actually more eventful than expected.</p>
+<p>Since I know that OS X ships with a preinstalled version of OpenSSH, I went straight to my terminal and fired the command:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">uname</span> -a
+<span class="kw">Darwin</span> Theodors-MacBook-Air.local 14.0.0 Darwin Kernel Version 14.0.0: Fri Sep 19 00:26:44 PDT 2014<span class="kw">;</span> <span class="kw">root</span>:xnu-2782.1.97~2/RELEASE_X86_64 x86_64
+$ <span class="kw">ssh</span> vararut@meno.lsbu.ac.uk
+<span class="kw">ssh</span>: connect to host meno.lsbu.ac.uk port 22: Operation timed out
+$</code></pre>
+<p>Well, now that's not a promising start. First idea: are ports blocked?</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ssh</span> <span class="ot">$arcturus</span>
+<span class="kw">Welcome</span> to Ubuntu 12.04.4 LTS (GNU/Linux 3.2.0-60-virtual i686)
+<span class="kw">*</span> Documentation:  https://help.ubuntu.com/
+<span class="kw">Last</span> login: Wed Dec 10 03:02:44 2014 from 136.148.10.8
+$</code></pre>
+<p>Looks like they are not, as SSHing through port 22 on one of my own GNU/Linux boxes works unhitched.</p>
+<blockquote>
+  <p><em>Note:</em> my password was not requested for the login as I have set this machine up with my public RSA key.</p>
+</blockquote>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">uname</span> -a
+<span class="kw">Linux</span> blog.vararu.org 3.2.0-60-virtual <span class="co">#91-Ubuntu SMP Wed Feb 19 04:35:08 UTC 2014 i686 i686 i386 GNU/Linux</span>
+$ <span class="kw">ssh</span> vararut@meno.lsbu.ac.uk
+<span class="kw">Warning</span> : Unauthorised Access Prohibited
+<span class="kw">vararut@meno.lsbu.ac.uk</span><span class="dt">\&#39;</span>s password:</code></pre>
+<p>Interesting! My GNU/Linux box can get through just fine, and proceeds to the SSH password prompt. Investigating further, and running the ssh command in verbose mode via <code>ssh -v</code>, reveals that my OS X machine is choking before it can even form a connection:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ssh</span> -v vararut@meno.lsbu.ac.uk
+<span class="kw">OpenSSH_6.2p2</span>, OSSLShim 0.9.8r 8 Dec 2011
+<span class="kw">debug1</span>: Reading configuration data /etc/ssh_config
+<span class="kw">debug1</span>: /etc/ssh_config line 103: Applying options for *
+<span class="kw">debug1</span>: Connecting to meno.lsbu.ac.uk [136.148.76.159] port 22.
+<span class="kw">debug1</span>: connect to address 136.148.76.159 port 22: Operation timed out
+<span class="kw">ssh</span>: connect to host meno.lsbu.ac.uk port 22: Operation timed out
+$</code></pre>
+<p>I've tried other avenues of investigation to figure out what the root cause is, but after coming up empty-handed I decided to skip to the exercise itself, since my GNU/Linux box can connect just fine:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ssh</span> vararut@meno.lsbu.ac.uk
+<span class="kw">Warning</span> : Unauthorised Access Prohibited
+<span class="kw">vararut@meno.lsbu.ac.uk</span><span class="dt">\&#39;</span>s password:
+<span class="kw">Last</span> login: Wed Dec 10 03:07:37 2014 from 188.226.201.122
+<span class="co">### SNIPPED ###</span>
+<span class="kw">Disk</span> quotas for user vararut (uid 171224)<span class="kw">:</span>
+<span class="kw">Filesystem</span>  blocks   quota   limit   grace   files   quota   limit   grace
+<span class="kw">/dev/sdb1</span>     136   50000   60000              18    2000    2500
+[<span class="kw">vararut@meno</span> ~]$ uname -a
+<span class="kw">Linux</span> meno.lsbu.ac.uk 2.6.18-53.el5 <span class="co">#1 SMP Wed Oct 10 16:34:19 EDT 2007 x86_64 x86_64 x86_64 GNU/Linux</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>We're in! Logging out is simple:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ exit
+<span class="kw">logout</span>
+<span class="kw">Connection</span> to meno.lsbu.ac.uk closed.
+$ </code></pre>
+<blockquote>
+  <p>Then, compare this list and its descriptions to the general connection categories and methods of logging on and logging off. These general categories are: - a. Local Area Network (LAN) Connection - b. Internet Connection - c. Stand-Alone Connection</p>
+</blockquote>
+<p>Turns out, my eventual login method is actually rather convoluted. It involves using an Internet Connection to first connect to my Amsterdam-based GNU/Linux blog server, followed by another SSH tunnel back here in London to where I assume the LSBU Meno servers are located. All in all, thanks to the magic of broadband, the end result is actually superbly usable and stable, despite the unnecessary roundtrip.</p>
+<blockquote>
+  <p>If your method of connection is completely different from anything shown in lecture notes, try to give a descriptive name to your method.</p>
+</blockquote>
+<p>I shall dub my method as such: &quot;Mac OS X is a miserable pile of faux POSIX compliance so I just used Ubuntu&quot;.</p>
+<p>Onward to the next task.</p>
+<hr />
+<h3 id="task-3">Task 3</h3>
+<p>Pretty straightforward, let's go!</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ ls
+[<span class="kw">vararut@meno</span> ~]$ pwd
+<span class="kw">/users/std/stud/v/va/vararut</span>
+[<span class="kw">vararut@meno</span> ~]$ xy
+<span class="kw">-bash</span>: xy: command not found
+[<span class="kw">vararut@meno</span> ~]$ cd ..
+[<span class="kw">vararut@meno</span> va]$ pwd
+<span class="kw">/users/std/stud/v/va</span>
+[<span class="kw">vararut@meno</span> va]$ cd
+[<span class="kw">vararut@meno</span> ~]$ pwd
+<span class="kw">/users/std/stud/v/va/vararut</span>
+[<span class="kw">vararut@meno</span> ~]$ cd /usr/local
+[<span class="kw">vararut@meno</span> local]$ ls
+<span class="kw">bin</span>    etc    include  lib64    man        sbin   src
+<span class="kw">cams2</span>  games  lib      libexec  mysql-3.23.32  share  tomcat
+[<span class="kw">vararut@meno</span> local]$ cd
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>Explanations as follows:</p>
+<ul>
+  <li><code>ls</code> lists the contents of our home folder, which is empty.</li>
+  <li><code>pwd</code> prints our working directory, which is our <code>Meno</code> home folder: <code>/users/std/stud/v/va/vararut</code></li>
+  <li><code>xy</code> is not a valid command, so the shell rejects it and prints out an error message.</li>
+  <li><code>cd ..</code> takes us up a folder in the directory hierarchy.</li>
+  <li><code>pwd</code> prints that we're not in the shared <code>va</code> folder, which contains what I assume are the home folders of other students whose surnames start with <code>va</code>.</li>
+  <li><code>cd</code> with no command arguments will take us back to our home folder.</li>
+  <li><code>pwd</code> confirms that we're back home.</li>
+  <li><code>cd /usr/local</code> takes us to the <code>/usr/local</code> folder.</li>
+  <li><code>ls</code> shows us the contents of <code>/usr/local</code>, which includes some binary executables, games, and various other software and documentation.</li>
+  <li><code>cd</code> home sweet home again!</li>
+</ul>
+<hr />
+<h3 id="task-4">Task 4</h3>
+<p>Let's create the two files!</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ cat <span class="kw">&gt;</span> 1st
+<span class="kw">Lorem</span> ipsum
+[<span class="kw">vararut@meno</span> ~]$ cat 1st
+<span class="kw">Lorem</span> ipsum
+[<span class="kw">vararut@meno</span> ~]$ cat <span class="kw">&gt;</span> 2nd
+<span class="kw">Dolor</span> sit
+[<span class="kw">vararut@meno</span> ~]$ cat 2nd
+<span class="kw">Dolor</span> sit
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>And now, let's create the directory structures! Figure 1:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ mkdir old temp new
+[<span class="kw">vararut@meno</span> ~]$ mkdir temp/junk
+[<span class="kw">vararut@meno</span> ~]$ mv 1st old/
+[<span class="kw">vararut@meno</span> ~]$ mv 2nd new/
+[<span class="kw">vararut@meno</span> ~]$ tree
+<span class="kw">.</span>
+<span class="kw">|--</span> new
+<span class="kw">|</span>   <span class="kw">`--</span> 2nd
+<span class="kw">|--</span> old
+<span class="kw">|</span>   <span class="kw">`--</span> 1st
+<span class="kw">`--</span> temp
+    <span class="kw">`--</span> junk
+<span class="kw">4</span> directories, 2 files
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>Resetting the directory structure as before:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ mv old/1st .
+[<span class="kw">vararut@meno</span> ~]$ mv new/2nd .
+[<span class="kw">vararut@meno</span> ~]$ rm -rf old temp new
+[<span class="kw">vararut@meno</span> ~]$ tree
+<span class="kw">.</span>
+<span class="kw">|--</span> 1st
+<span class="kw">`--</span> 2nd
+<span class="kw">0</span> directories, 2 files
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>Constructing Figure 2:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ mkdir -p major minor aug/7th
+[<span class="kw">vararut@meno</span> ~]$ mv 1st major/
+[<span class="kw">vararut@meno</span> ~]$ mv 2nd aug/7th/
+[<span class="kw">vararut@meno</span> ~]$ tree
+<span class="kw">.</span>
+<span class="kw">|--</span> aug
+<span class="kw">|</span>   <span class="kw">`--</span> 7th
+<span class="kw">|</span>       <span class="kw">`--</span> 2nd
+<span class="kw">|--</span> major
+<span class="kw">|</span>   <span class="kw">`--</span> 1st
+<span class="kw">`--</span> minor
+<span class="kw">4</span> directories, 2 files
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>Reset, and then proceed to constructing Figure 3:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ mkdir -p big small medium/tall
+[<span class="kw">vararut@meno</span> ~]$ cp 1st big/1stcopy
+[<span class="kw">vararut@meno</span> ~]$ mv 1st small/
+[<span class="kw">vararut@meno</span> ~]$ mv 2nd medium/tall/
+[<span class="kw">vararut@meno</span> ~]$ tree
+<span class="kw">.</span>
+<span class="kw">|--</span> big
+<span class="kw">|</span>   <span class="kw">`--</span> 1stcopy
+<span class="kw">|--</span> medium
+<span class="kw">|</span>   <span class="kw">`--</span> tall
+<span class="kw">|</span>       <span class="kw">`--</span> 2nd
+<span class="kw">`--</span> small
+    <span class="kw">`--</span> 1st
+<span class="kw">4</span> directories, 3 files
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>And finally, Figure 4:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ mkdir -p time/now space/then arch/nice
+[<span class="kw">vararut@meno</span> ~]$ cp 1st time/now/1stcopy
+[<span class="kw">vararut@meno</span> ~]$ mv 1st space/then/
+[<span class="kw">vararut@meno</span> ~]$ mv 2nd arch/nice/
+[<span class="kw">vararut@meno</span> ~]$ tree
+<span class="kw">.</span>
+<span class="kw">|--</span> arch
+<span class="kw">|</span>   <span class="kw">`--</span> nice
+<span class="kw">|</span>       <span class="kw">`--</span> 2nd
+<span class="kw">|--</span> space
+<span class="kw">|</span>   <span class="kw">`--</span> then
+<span class="kw">|</span>       <span class="kw">`--</span> 1st
+<span class="kw">`--</span> time
+    <span class="kw">`--</span> now
+        <span class="kw">`--</span> 1stcopy
+<span class="kw">6</span> directories, 3 files
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-5">Task 5</h3>
+<p>Here is the table with my own personalised descriptions of all of the methods:</p>
+<table>
+  <thead>
+    <tr class="header">
+      <th align="left">Command</th>
+      <th align="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="odd">
+      <td align="left"><code>cat</code></td>
+      <td align="left">Con<strong>cat</strong>enate files or input streams. Often used to show the contents of files.</td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>more</code></td>
+      <td align="left">Page and search through long files and outputs with ease. &quot;Show me <strong>more</strong>&quot;.</td>
+    </tr>
+    <tr class="odd">
+      <td align="left"><code>cp</code></td>
+      <td align="left"><strong>C</strong>o<strong>p</strong>y files and directories.</td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>mv</code></td>
+      <td align="left">Rename (<strong>m</strong>o<strong>v</strong>e) files and directories.</td>
+    </tr>
+    <tr class="odd">
+      <td align="left"><code>rm</code></td>
+      <td align="left"><strong>R</strong>e<strong>m</strong>ove files and directories.</td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>ls</code></td>
+      <td align="left"><strong>L</strong>i<strong>s</strong>t and sort files and directories.</td>
+    </tr>
+    <tr class="odd">
+      <td align="left"><code>mkdir</code></td>
+      <td align="left"><strong>M</strong>a<strong>k</strong>e a <strong>dir</strong>ectory.</td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>pwd</code></td>
+      <td align="left">Show the <strong>p</strong>ath to the current <strong>w</strong>orking <strong>d</strong>irectory.</td>
+    </tr>
+    <tr class="odd">
+      <td align="left"><code>cd</code></td>
+      <td align="left">Change the <strong>c</strong>urrent <strong>d</strong>irectory.</td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>rmdir</code></td>
+      <td align="left"><strong>R</strong>e<strong>m</strong>ove a <strong>dir</strong>ectory. Must be empty.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<h3 id="task-6">Task 6</h3>
+<p>Since I was already familiarised with these commands, as well as some of their particularities (such as the <code>-p</code> option for <code>mkdir</code> to recursively create subdirectories that occur in the specified path), I don't think I would change anything, but I am always open to learning new tricks!</p>
+<hr />
+<h3 id="task-7">Task 7</h3>
+<p>Off we go!</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ exit
+<span class="kw">logout</span>
+<span class="kw">Connection</span> to meno.lsbu.ac.uk closed.
+$ </code></pre>
+<hr />
+<h2 id="part-b">Part B</h2>
+<h3 id="task-1">Task 1</h3>
+<p>Logging into my system right away.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">➜  <span class="kw">~</span>  <span class="kw">ssh</span> vararut@meno.lsbu.ac.uk
+<span class="kw">Warning</span> : Unauthorised Access Prohibited
+<span class="kw">vararut@meno.lsbu.ac.uk</span><span class="st">&#39;s password:</span>
+<span class="st">Last login: Wed Dec 10 21:23:21 2014 from 188.226.201.122</span>
+<span class="st">[vararut@meno ~]$</span></code></pre>
+<hr />
+<h3 id="task-2-1">Task 2</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ who
+<span class="kw">richj3</span>   pts/9        2014-12-10 20:30 (cpc2-slam6-2-0-cust66.2-4.cable.virginm.net)
+<span class="kw">santamaa</span> pts/10       2014-12-10 19:54 (host86-132-102-246.range86-132.btcentralplus.com)
+<span class="kw">coxr2</span>    pts/11       2014-12-10 22:18 (5ec1bde7.skybroadband.com)
+<span class="kw">sekyewaj</span> pts/12       2014-12-10 21:53 (90.198.211.30)
+<span class="kw">vararut</span>  pts/15       2014-12-10 22:17 (188.226.201.122)
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>Looks like there are 5 users logged in, and the longest active user is <code>santamaa</code> who logged in at <code>2014-12-10 19:54</code>. I assume there are no users logged in via <code>telnet</code>, since trying to do so on the default port times out:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">➜  <span class="kw">~</span>  <span class="kw">telnet</span> meno.lsbu.ac.uk
+<span class="kw">Trying</span> 136.148.76.159...
+<span class="kw">telnet</span>: Unable to connect to remote host: Connection timed out
+$ </code></pre>
+<hr />
+<h3 id="task-3-1">Task 3</h3>
+<blockquote>
+  <p>Use the <code>date</code> command to display the current time. Show your session.</p>
+</blockquote>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ date
+<span class="kw">Wed</span> Dec 10 22:50:27 GMT 2014
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-4-1">Task 4</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ history <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;cal&quot;</span>
+<span class="kw">224</span>  cd /usr/local
+<span class="kw">294</span>  cal 4
+<span class="kw">295</span>  cal 52
+<span class="kw">296</span>  cal 1752
+<span class="kw">297</span>  cal 1952
+<span class="kw">298</span>  cal 2004
+<span class="kw">299</span>  cal 2013
+<span class="kw">300</span>  history <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;cal&quot;</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<blockquote>
+  <p>Does the command work fine both leap and non-leap years? How could you tell?</p>
+</blockquote>
+<p>I honestly didn't bother inspecting the output when I used the commands, since I already know that <code>cal</code> is rock solid, but scrolling up to look at the output for <code>cal 2014</code> does reveal that February has 29 days as expected.</p>
+<p>1752 has 366 days and this is unsurprising, as it is divisible by 4 and as such a leap year. Google presents 10 results on the main page, as is standard, with a proeminent entry for the Wikipedia Article on this subject, http://en.wikipedia.org/wiki/Gregorian_calendar. It states that its namesake is after its inventor:</p>
+<blockquote>
+  <p>It is named for Pope Gregory XIII, who introduced it in 1582.</p>
+</blockquote>
+<hr />
+<h3 id="task-5-1">Task 5</h3>
+<blockquote>
+  <p>Use the <code>pwd</code> command to display the name of your home directory. Show your session.</p>
+</blockquote>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ pwd
+<span class="kw">/users/std/stud/v/va/vararut</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-6-1">Task 6</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ uname
+<span class="kw">Linux</span>
+[<span class="kw">vararut@meno</span> ~]$ uname -n
+<span class="kw">meno.lsbu.ac.uk</span>
+[<span class="kw">vararut@meno</span> ~]$ uname -p
+<span class="kw">x86_64</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>The operating system is GNU/Linux, which consists of the GNU core utils running on top of the Linux kernel. This is evident by running <code>uname -o</code>, which will return the operating system name:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ uname -o
+<span class="kw">GNU/Linux</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>Richard Stallman is always keen to remind us of the fact that Linux is just the kernel, rather than the full operating system: http://en.wikipedia.org/wiki/GNU/Linux_naming_controversy.</p>
+<p>The nodename is <code>meno.lsbu.ac.uk</code>, and the processor type is <code>x86_64</code>.</p>
+<hr />
+<h3 id="task-7-1">Task 7</h3>
+<blockquote>
+  <p>Which operating system does the operating system run on?</p>
+</blockquote>
+<p>Err, this question seems phrased incorrectly. The operating system runs on 16-bit minicomputers.</p>
+<blockquote>
+  <p>Who owns the rights of RSTS?</p>
+</blockquote>
+<p>Apparently DEC sold their rights to Mentec at one point.</p>
+<blockquote>
+  <p>How old is RSTS?</p>
+</blockquote>
+<p>The first version was released in 1970, so 34 years old.</p>
+<blockquote>
+  <p>What does RSTS stand for?</p>
+</blockquote>
+<p>&quot;Resource Sharing Timesharing System&quot;.</p>
+<blockquote>
+  <p>When was RSTS operating system written?</p>
+</blockquote>
+<ol start="1970" style="list-style-type: decimal">
+  <li></li>
+</ol>
+<blockquote>
+  <p>Where was RSTS written?</p>
+</blockquote>
+<p>Digital Equipment Corporation headquarters in Maynard, Massachusetts, United States.</p>
+<hr />
+<h3 id="task-8">Task 8</h3>
+<table>
+  <thead>
+    <tr class="header">
+      <th align="left">OS</th>
+      <th align="left">Google.com Hits</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="odd">
+      <td align="left">UNIX</td>
+      <td align="left">174,000,000</td>
+    </tr>
+    <tr class="even">
+      <td align="left">Linux</td>
+      <td align="left">454,000,000</td>
+    </tr>
+    <tr class="odd">
+      <td align="left">FreeBSD</td>
+      <td align="left">23,900,000</td>
+    </tr>
+    <tr class="even">
+      <td align="left">NetBSD</td>
+      <td align="left">818,000</td>
+    </tr>
+    <tr class="odd">
+      <td align="left">Solaris</td>
+      <td align="left">78,100,000</td>
+    </tr>
+    <tr class="even">
+      <td align="left">Windows 8</td>
+      <td align="left">756,000,000</td>
+    </tr>
+    <tr class="odd">
+      <td align="left">Windows 7</td>
+      <td align="left">786,000,000</td>
+    </tr>
+    <tr class="even">
+      <td align="left">Windows XP</td>
+      <td align="left">238,000,000</td>
+    </tr>
+    <tr class="odd">
+      <td align="left">Windows 2000</td>
+      <td align="left">145,000,000</td>
+    </tr>
+    <tr class="even">
+      <td align="left">Windows NT</td>
+      <td align="left">53,100,000</td>
+    </tr>
+    <tr class="odd">
+      <td align="left">Windows 98</td>
+      <td align="left">96,400,000</td>
+    </tr>
+    <tr class="even">
+      <td align="left">Windows 95</td>
+      <td align="left">91,900,000</td>
+    </tr>
+    <tr class="odd">
+      <td align="left">Windows 3.1</td>
+      <td align="left">25,300,000</td>
+    </tr>
+    <tr class="even">
+      <td align="left">Mac OS</td>
+      <td align="left">213,000,000</td>
+    </tr>
+  </tbody>
+</table>
+<p>The most popular are, ordered by hits: Windows 7, Windows 8 and Linux. Windows aggregates a total of <strong>2,482,800,000</strong> results.</p>
+<hr />
+<h3 id="task-9">Task 9</h3>
+<blockquote>
+  <p>What is the name of world’s first time-sharing operating system?</p>
+</blockquote>
+<p>CTSS, apparently.</p>
+<hr />
+<h3 id="task-10">Task 10</h3>
+<table>
+  <thead>
+    <tr class="header">
+      <th align="left">Acronym</th>
+      <th align="left">Expansion</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="odd">
+      <td align="left">BOS</td>
+      <td align="left">Either IBM's Basic Operating System or Motorola's Business Operating System</td>
+    </tr>
+    <tr class="even">
+      <td align="left">BOSS</td>
+      <td align="left">Bharat Operating System Solutions</td>
+    </tr>
+    <tr class="odd">
+      <td align="left">DOS</td>
+      <td align="left">Disk Operating System</td>
+    </tr>
+    <tr class="even">
+      <td align="left">JOSS</td>
+      <td align="left">JOHNNIAC Open-Shop System</td>
+    </tr>
+    <tr class="odd">
+      <td align="left">MOS</td>
+      <td align="left">Mobile Operating System</td>
+    </tr>
+    <tr class="even">
+      <td align="left">POS</td>
+      <td align="left">PERQ Operating System</td>
+    </tr>
+    <tr class="odd">
+      <td align="left">TSOS</td>
+      <td align="left">Time Sharing Operating System</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<h3 id="task-11">Task 11</h3>
+<p>EDSAC, 6 May 1949, the University of Cambridge Mathematical Laboratory in England.</p>
+<hr />
+<h3 id="task-12">Task 12</h3>
+<blockquote>
+  <p>When did the first version of UNIX come out and what was its name?</p>
+</blockquote>
+<p>The first version was called UNICS and it came out in 1970.</p>
+<blockquote>
+  <p>Who were the authors of UNIX?</p>
+</blockquote>
+<p>It was written by Ken Thompson and Dennis Ritchie (RIP).</p>
+<blockquote>
+  <p>Where (organization) was UNIX designed and written?</p>
+</blockquote>
+<p>AT&amp;T Bell Labs.</p>
+<blockquote>
+  <p>When (year) was UNIX rewritten in C?</p>
+</blockquote>
+<ol start="1972" style="list-style-type: decimal">
+  <li></li>
+</ol>
+<blockquote>
+  <p>When did BSD UNIX come out?</p>
+</blockquote>
+<ol start="1977" style="list-style-type: decimal">
+  <li></li>
+</ol>
+<blockquote>
+  <p>When did FreeBSD come out?</p>
+</blockquote>
+<ol start="1993" style="list-style-type: decimal">
+  <li></li>
+</ol>
+<blockquote>
+  <p>Who said this and when: <em>&quot;...the number of UNIX installations has grown to 10, with more expected...&quot;</em></p>
+</blockquote>
+<p>Dennis Ritchie and Ken Thompson, June 1972.</p>
+<blockquote>
+  <p>When was TCP/IP implemented in the UNIX kernel and in which UNIX flavor?</p>
+</blockquote>
+<p>In BSD Unix, starting with version 4.1c.</p>
+<blockquote>
+  <p>When did Solaris 9.0E come out?</p>
+</blockquote>
+<ol start="2003" style="list-style-type: decimal">
+  <li></li>
+</ol>
+<blockquote>
+  <p>Who created the B language and when?</p>
+</blockquote>
+<p>Ken Thompson with Dennis Ritchie, circa 1969.</p>
+<blockquote>
+  <p>Who created the C language and when?</p>
+</blockquote>
+<p>Dennis Ritchie, circa 1969.</p>
+<hr />
+<h3 id="task-13">Task 13</h3>
+<p>Off we go!</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ exit
+<span class="kw">logout</span>
+<span class="kw">Connection</span> to meno.lsbu.ac.uk closed.
+$ </code></pre>
+<hr />
+<h2 id="part-c">Part C</h2>
+<h3 id="task-2-2">Task 2</h3>
+<table>
+  <thead>
+    <tr class="header">
+      <th align="left">Command</th>
+      <th align="left">Short Description</th>
+      <th align="left">Example Use</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="odd">
+      <td align="left"><code>touch</code></td>
+      <td align="left">Create an empty file, or update an existing one.</td>
+      <td align="left"><code>touch test.txt</code></td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>cp</code></td>
+      <td align="left">Copy files and directories.</td>
+      <td align="left"><code>cp -rv ~/Desktop/*.jpg ~/Pictures/</code></td>
+    </tr>
+    <tr class="odd">
+      <td align="left"><code>mv</code></td>
+      <td align="left">Rename/move files and directories.</td>
+      <td align="left"><code>mv .bashrc .bash_profile</code></td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>rm</code></td>
+      <td align="left">Remove files and directories.</td>
+      <td align="left"><code>rm -rf /</code></td>
+    </tr>
+    <tr class="odd">
+      <td align="left"><code>mkdir</code></td>
+      <td align="left">Make directories and subdirectories.</td>
+      <td align="left"><code>mkdir -p ho/ho/ho/merry/christmas</code></td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>rmdir</code></td>
+      <td align="left">Remove empty directories.</td>
+      <td align="left"><code>rmdir -p ho/ho/ho/merry/christmas</code></td>
+    </tr>
+    <tr class="odd">
+      <td align="left"><code>ls</code></td>
+      <td align="left">List files.</td>
+      <td align="left"><code>ls ~/Pictures/*.jpg</code></td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>lpr</code></td>
+      <td align="left">Print files.</td>
+      <td align="left"><code>lpr thesis.txt</code></td>
+    </tr>
+    <tr class="odd">
+      <td align="left"><code>cd</code></td>
+      <td align="left">Change directory.</td>
+      <td align="left"><code>cd /bin/</code></td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>pwd</code></td>
+      <td align="left">Print working directory.</td>
+      <td align="left"><code>pwd</code></td>
+    </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+    <tr class="header">
+      <th align="left">Command</th>
+      <th align="left">Short Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="odd">
+      <td align="left"><code>open</code></td>
+      <td align="left">Opens a file or device.</td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>read</code></td>
+      <td align="left">Read from the standard input and store in a shell variable.</td>
+    </tr>
+    <tr class="odd">
+      <td align="left"><code>write</code></td>
+      <td align="left">Write to a file descriptor.</td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>close</code></td>
+      <td align="left">Close a file descriptor.</td>
+    </tr>
+    <tr class="odd">
+      <td align="left"><code>pipe</code></td>
+      <td align="left">Create a pipe inode.</td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>socket</code></td>
+      <td align="left">Create a network communication endpoint.</td>
+    </tr>
+    <tr class="odd">
+      <td align="left"><code>mkfifo</code></td>
+      <td align="left">Create a named pipe.</td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>system</code></td>
+      <td align="left">Execute a shell command.</td>
+    </tr>
+    <tr class="odd">
+      <td align="left"><code>printf</code></td>
+      <td align="left">Format and print data.</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<h3 id="task-3-2">Task 3</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ cat /etc/motd
+<span class="co">################################################################################</span>
+<span class="kw">Unauthorised</span> access is prohibited
+<span class="kw">NOTE</span>: meno now supports https. To develope a https site create a .private_html directory and then run wwwset to set the correct permissions viz
+$ <span class="kw">cd</span>
+$ <span class="kw">mkdir</span> .private_html
+$ <span class="kw">wwwset</span>
+<span class="kw">By</span> putting content into .private_html you make now view it at https://mypages.lsbu.ac.uk/~username
+<span class="kw">Non-https</span>  personal web pages are still available on this server using the URL
+<span class="kw">http</span>://mypages.lsbu.ac.uk/~username
+<span class="kw">STUDENT</span> personal web pages are only visible on-campus. If you are developing a web site and wish to view it from off campus you will need to connect to the VPN first. Details can be found at
+<span class="kw">http</span>://www.lsbu.ac.uk/ict/services/vpn.shtml
+<span class="kw">Please</span> note that web pages should be located in your .public_html folder and any PHP scripts you develop should be located in your .public_html/cgi-bin folder
+<span class="co">###############################################################################</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-4-2">Task 4</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ echo <span class="ot">$PATH</span>
+<span class="kw">/usr/lib64/qt-3.3</span>/bin:<span class="kw">/usr/kerberos</span>/bin:<span class="kw">/usr/local</span>/bin:/bin:<span class="kw">/usr</span>/bin:<span class="kw">/usr/lib/oracle/11.2/client64</span>/bin:<span class="kw">/users/std/stud/v/va/vararut</span>/bin:<span class="kw">.</span>
+[<span class="kw">vararut@meno</span> ~]$ echo <span class="ot">$path</span>
+[<span class="kw">vararut@meno</span> ~]$ echo <span class="ot">$LINES</span>
+<span class="kw">25</span>
+[<span class="kw">vararut@meno</span> ~]$ echo <span class="ot">$HOME</span>
+<span class="kw">/users/std/stud/v/va/vararut</span>
+[<span class="kw">vararut@meno</span> ~]$ echo <span class="ot">$home</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-5-2">Task 5</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ echo <span class="ot">$LINES</span>
+<span class="kw">25</span>
+[<span class="kw">vararut@meno</span> ~]$ export LINES=15
+[<span class="kw">vararut@meno</span> ~]$ echo <span class="ot">$LINES</span>
+<span class="kw">15</span>
+[<span class="kw">vararut@meno</span> ~]$ man ls
+[<span class="kw">vararut@meno</span> ~]$ echo <span class="ot">$LINES</span>
+<span class="kw">25</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>Running <code>man ls</code> changes the value of <code>LINES</code> back to <code>25</code>. So, still <code>25</code>.</p>
+<hr />
+<h1 id="lab-2">Lab 2</h1>
+<h2 id="part-a-1">Part A</h2>
+<h3 id="task-7-2">Task 7</h3>
+<blockquote>
+  <p>What does the abbreviation pwd stand for?</p>
+</blockquote>
+<p><code>pwd</code> stands for <code>print working directory</code>.</p>
+<hr />
+<h3 id="task-8-1">Task 8</h3>
+<blockquote>
+  <p>What does the output of the pwd command represent with respect to the location of the root directory in the Linux file system hierarchy?</p>
+</blockquote>
+<p>It represents a location string starting from the filesystem root, <code>/</code>.</p>
+<hr />
+<h3 id="task-9-1">Task 9</h3>
+<blockquote>
+  <p>What does the abbreviation <code>cd</code> stand for?</p>
+</blockquote>
+<p>Change directory.</p>
+<hr />
+<h3 id="task-10-1">Task 10</h3>
+<blockquote>
+  <p>What does the result of the <code>cd ..</code> command represent with respect to the location of the previous directory location in the Linux file system hierarchy?</p>
+</blockquote>
+<p><code>cd ..</code> takes you up one directory in the filesystem hierarchy.</p>
+<hr />
+<h3 id="task-11-1">Task 11</h3>
+<blockquote>
+  <p>Which directory in the Linux file system does the <code>cd /</code> command take you to?</p>
+</blockquote>
+<p>The root.</p>
+<hr />
+<h3 id="task-12-1">Task 12</h3>
+<blockquote>
+  <p>Which directory in the Linux file system does the <code>cd</code> command take you to?</p>
+</blockquote>
+<p>Your home folder.</p>
+<hr />
+<h3 id="task-13-1">Task 13</h3>
+<blockquote>
+  <p>Is it obvious what the <code>touch</code> command is designed to do?</p>
+</blockquote>
+<p>Intuitive, but not exactly obvious.</p>
+<hr />
+<h3 id="task-14">Task 14</h3>
+<blockquote>
+  <p>Type <code>man touch</code> and press the Enter key. What does the MAN page for <code>touch</code> say about the purpose of this command?</p>
+</blockquote>
+<p>&quot;Change file timestamps&quot;.</p>
+<hr />
+<h3 id="task-15">Task 15</h3>
+<blockquote>
+  <p>What are the permissions assigned to users and groups for <code>file1</code>?</p>
+</blockquote>
+<p>Read/Write for the owner (me), Read for my group, Read for global. <code>rw-r--r--</code>.</p>
+<hr />
+<h3 id="task-16">Task 16</h3>
+<blockquote>
+  <p>What are the new <code>file1</code> permissions for users and groups?</p>
+</blockquote>
+<p>Everyone can read, write and execute. <code>rwxrwxrwx</code>.</p>
+<hr />
+<h3 id="task-17">Task 17</h3>
+<blockquote>
+  <p>Are these permissions reasonable for <code>file1</code>?</p>
+</blockquote>
+<p><code>777</code> is generally never reasonable, and a crutch used in cases where proper permissions are misunderstood.</p>
+<hr />
+<h3 id="task-18">Task 18</h3>
+<blockquote>
+  <p>Why is it not possible for you to create the xyz directory in the <code>/usr/bin</code> directory?</p>
+</blockquote>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ cd /usr/bin
+[<span class="kw">vararut@meno</span> bin]$ mkdir xyz
+<span class="kw">mkdir</span>: cannot create directory xyz<span class="st">&#39;: Permission denied</span>
+<span class="st">[vararut@meno bin]$</span></code></pre>
+<p>Permission denied.</p>
+<hr />
+<h3 id="task-19">Task 19</h3>
+<blockquote>
+  <p>Which character in the listing displayed after typing <code>ls -l</code> indicates that xyz is a directory?</p>
+</blockquote>
+<p>The <code>d</code> at the start.</p>
+<hr />
+<h3 id="task-20">Task 20</h3>
+<blockquote>
+  <p>Why was it not possible to delete the subfiles directory?</p>
+</blockquote>
+<p><code>rmdir</code> will not work on non-empty directories, to prevent accidental misuse.</p>
+<hr />
+<h3 id="task-21">Task 21</h3>
+<blockquote>
+  <p>How does the output of the <code>ls</code> command differ from that of the <code>ls -l</code> command?</p>
+</blockquote>
+<p><code>-l</code> switches to a long listing format, with more information.</p>
+<hr />
+<h3 id="task-22">Task 22</h3>
+<blockquote>
+  <p>A file listing for which directory is displayed after typing <code>ls /</code> ?</p>
+</blockquote>
+<p>The root directory.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ ls /
+<span class="kw">bin</span>   etc   lib64   misc  opt   save     srv  tom    usr
+<span class="kw">boot</span>  home  lost+found  mnt   proc  sbin     sys  user   var
+<span class="kw">dev</span>   lib   media   net   root  selinux  tmp  users
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-23">Task 23</h3>
+<blockquote>
+  <p>Which files in your home directory are listed after typing <code>ls A*.txt</code>? What do these files have in common?</p>
+</blockquote>
+<p>They all start with the prefix <code>A</code> and end in <code>.txt</code>.</p>
+<hr />
+<h3 id="task-24">Task 24</h3>
+<blockquote>
+  <p>Explain the error messages that are displayed after typing the <code>ls</code> and <code>mv</code> commands.</p>
+</blockquote>
+<p><code>ls</code> will return that there is no such file or directory.</p>
+<p><code>mv</code> will return permission denied for each affected file.</p>
+<hr />
+<h3 id="task-25">Task 25</h3>
+<blockquote>
+  <p>Which account could perform the <code>mv</code> command without getting the error message?</p>
+</blockquote>
+<p>The root user.</p>
+<hr />
+<h3 id="task-26">Task 26</h3>
+<blockquote>
+  <p>Procedurally, how does copying a file differ from moving a file?</p>
+</blockquote>
+<p><code>cp</code> creates a new inode while moving a file just switches a pointer. Moving/renaming is atomic, while copying takes time.</p>
+<hr />
+<h3 id="task-27">Task 27</h3>
+<blockquote>
+  <p>What additional feature does the <code>rm -i</code> command offer over the rm command?</p>
+</blockquote>
+<p>It makes the <code>rm</code> command interactive, prompting for user confirmation.</p>
+<hr />
+<h3 id="task-28">Task 28</h3>
+<blockquote>
+  <p>What output is produced for the command <code>cat mlist</code> ?</p>
+</blockquote>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ ls
+<span class="kw">file1</span>  mlist  xyz
+[<span class="kw">vararut@meno</span> ~]$ ls <span class="kw">&gt;</span> mlist
+[<span class="kw">vararut@meno</span> ~]$ echo <span class="st">&quot;This is the last line of the file&quot;</span> <span class="kw">&gt;&gt;</span> mlist
+[<span class="kw">vararut@meno</span> ~]$ cat mlist
+<span class="kw">file1</span>
+<span class="kw">mlist</span>
+<span class="kw">xyz</span>
+<span class="kw">This</span> is the last line of the file
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>This is because the <code>ls &gt; mlist</code> redirection will overwrite the file, and then the <code>echo &gt;&gt; mlist</code> redirection will append the last line.</p>
+<hr />
+<h3 id="task-29">Task 29</h3>
+<blockquote>
+  <p>Assume the previous paragraph is stored in a file called <code>textfile3.rtf</code>. What would be the output for the following <code>grep</code> command? <code>grep -c &quot;Data&quot; textfile3.rtf</code></p>
+</blockquote>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ echo <span class="st">&quot;For example, the command grep &quot;</span>ACK<span class="st">&quot; ftpSummaryLarge.rtf displays only those lines in the ftpSummaryLarge.rtf file that contain the key word ACK. Grep can also be used to determine how many lines in a given file contain a specific keyword. For example, one may wish to know the number of packets exchanged during a data transfer between two computers that meets a specific condition, such as the number of packets that contain application data. Issuing a command such as grep -c &quot;</span>Data<span class="st">&quot; tftpSummaryLarge.rtf, would instantly reduce a potentially large file into a single value that represents the number of data packets transferred.&quot;</span> <span class="kw">&gt;</span> textfile3.rtf
+[<span class="kw">vararut@meno</span> ~]$ grep -c <span class="st">&quot;Data&quot;</span> textfile3.rtf
+<span class="kw">1</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h1 id="lab-3">Lab 3</h1>
+<h2 id="part-a-2">Part A</h2>
+<h3 id="task-2-3">Task 2</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ mkdir -p temp personal/funstuff personal/taxes professional/societies/ieee professional/societies/acm professional/courses/general professional/courses/major/cs475 professional/courses/major/cs381/programs professional/courses/major/cs381/labs professional/courses/major/cs381/notes professional/courses/major/cs213
+[<span class="kw">vararut@meno</span> ~]$ tree
+<span class="kw">.</span>
+<span class="kw">|--</span> personal
+<span class="kw">|</span>   <span class="kw">|--</span> funstuff
+<span class="kw">|</span>   <span class="kw">`--</span> taxes
+<span class="kw">|--</span> professional
+<span class="kw">|</span>   <span class="kw">|--</span> courses
+<span class="kw">|</span>   <span class="kw">|</span>   <span class="kw">|--</span> general
+<span class="kw">|</span>   <span class="kw">|</span>   <span class="kw">`--</span> major
+<span class="kw">|</span>   <span class="kw">|</span>       <span class="kw">|--</span> cs213
+<span class="kw">|</span>   <span class="kw">|</span>       <span class="kw">|--</span> cs381
+<span class="kw">|</span>   <span class="kw">|</span>       <span class="kw">|</span>   <span class="kw">|--</span> labs
+<span class="kw">|</span>   <span class="kw">|</span>       <span class="kw">|</span>   <span class="kw">|--</span> notes
+<span class="kw">|</span>   <span class="kw">|</span>       <span class="kw">|</span>   <span class="kw">`--</span> programs
+<span class="kw">|</span>   <span class="kw">|</span>       <span class="kw">`--</span> cs475
+<span class="kw">|</span>   <span class="kw">`--</span> societies
+<span class="kw">|</span>       <span class="kw">|--</span> acm
+<span class="kw">|</span>       <span class="kw">`--</span> ieee
+<span class="kw">`--</span> temp
+<span class="kw">17</span> directories, 0 files
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-3-3">Task 3</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ pwd
+<span class="kw">/users/std/stud/v/va/vararut</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-4-3">Task 4</h3>
+<p>Path to home directory:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> courses]$ cd
+[<span class="kw">vararut@meno</span> ~]$ pwd
+<span class="kw">/users/std/stud/v/va/vararut</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>Path to <code>acm</code> directory:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ cd professional/societies/acm/
+[<span class="kw">vararut@meno</span> acm]$ pwd
+<span class="kw">/users/std/stud/v/va/vararut/professional/societies/acm</span>
+[<span class="kw">vararut@meno</span> acm]$</code></pre>
+<p>Two relative pathnames:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> courses]$ pwd
+<span class="kw">/users/std/stud/v/va/vararut/professional/courses</span>
+[<span class="kw">vararut@meno</span> courses]$ ls ../societies/acm/
+[<span class="kw">vararut@meno</span> courses]$ ls ~/professional/societies/acm/
+[<span class="kw">vararut@meno</span> courses]$</code></pre>
+<hr />
+<h3 id="task-5-3">Task 5</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ cd /usr
+[<span class="kw">vararut@meno</span> usr]$ ll
+<span class="kw">total</span> 344
+<span class="kw">drwxr-xr-x</span>   2 root root 69632 Sep 28 15:40 bin
+<span class="kw">drwxr-xr-x</span>   2 root root  4096 Oct 10  2006 etc
+<span class="kw">drwxr-xr-x</span>   2 root root  4096 Oct 10  2006 games
+<span class="kw">drwxr-xr-x</span> 129 root root 12288 Aug 13  2010 include
+<span class="kw">drwxr-xr-x</span>   5 root root  4096 Dec 10  2010 java
+<span class="kw">drwxr-xr-x</span>   6 root root  4096 Sep 11  2007 kerberos
+<span class="kw">drwxr-xr-x</span>  79 root root 65536 Nov  3  2011 lib
+<span class="kw">drwxr-xr-x</span>  90 root root 69632 Nov  7  2011 lib64
+<span class="kw">drwxr-xr-x</span>  10 root root  4096 Mar  4  2008 libexec
+<span class="kw">drwxr-xr-x</span>  16 root root  4096 Dec 10  2010 local
+<span class="kw">drwxr-xr-x</span>   2 root root 20480 Jul 11 12:46 sbin
+<span class="kw">drwxr-xr-x</span> 208 root root  4096 Aug 13  2010 share
+<span class="kw">drwxr-xr-x</span>   4 root root  4096 Mar  4  2008 src
+<span class="kw">drwx--x--x</span>   3 tftp bin   4096 Sep 16  2008 tftpdir
+<span class="kw">lrwxrwxrwx</span>   1 root root    10 Mar  4  2008 tmp -<span class="kw">&gt;</span> ../var/tmp
+<span class="kw">drwxr-xr-x</span>   2 root root  4096 Jun 21  2010 users
+<span class="kw">drwxr-xr-x</span>   3 root root  4096 Mar  4  2008 X11R6
+[<span class="kw">vararut@meno</span> usr]$ ls <span class="kw">|</span> <span class="kw">wc</span> -l
+<span class="kw">17</span>
+[<span class="kw">vararut@meno</span> usr]$</code></pre>
+<p>There are 17, through <code>ls | wc -l</code>. They are all directories, except for <code>tmp</code> which is a symlink.</p>
+<hr />
+<h3 id="task-6-2">Task 6</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ pwd
+<span class="kw">/users/std/stud/v/va/vararut</span>
+[<span class="kw">vararut@meno</span> ~]$ ls /usr/bin/ <span class="kw">|</span> <span class="kw">wc</span> -l
+<span class="kw">2328</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-7-3">Task 7</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ cat /etc/motd
+<span class="co">################################################################################</span>
+<span class="kw">Unauthorised</span> access is prohibited
+<span class="kw">NOTE</span>: meno now supports https. To develope a https site create a .private_html directory and then run wwwset to set the correct permissions viz
+$ <span class="kw">cd</span>
+$ <span class="kw">mkdir</span> .private_html
+$ <span class="kw">wwwset</span>
+<span class="kw">By</span> putting content into .private_html you make now view it at https://mypages.lsbu.ac.uk/~username
+<span class="kw">Non-https</span>  personal web pages are still available on this server using the URL
+<span class="kw">http</span>://mypages.lsbu.ac.uk/~username
+<span class="kw">STUDENT</span> personal web pages are only visible on-campus. If you are developing a web site and wish to view it from off campus you will need to connect to the VPN first. Details can be found at
+<span class="kw">http</span>://www.lsbu.ac.uk/ict/services/vpn.shtml
+<span class="kw">Please</span> note that web pages should be located in your .public_html folder and any PHP scripts you develop should be located in your .public_html/cgi-bin folder
+<span class="co">###############################################################################</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-8-2">Task 8</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ cat /etc/passwd <span class="kw">|</span> <span class="kw">grep</span> vararut
+<span class="kw">vararut</span>:x:171224:219:Theodor Vararu, Student,:/users/std/stud/v/va/vararut:/bin/bash
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<table>
+  <thead>
+    <tr class="header">
+      <th align="left">User name</th>
+      <th align="left">User ID</th>
+      <th align="left">Group ID</th>
+      <th align="left">Personal Information</th>
+      <th align="left">Home Directory</th>
+      <th align="left">Login Shell</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="odd">
+      <td align="left"><code>vararut</code></td>
+      <td align="left">171224</td>
+      <td align="left">219</td>
+      <td align="left">Theodor Vararu, Student</td>
+      <td align="left"><code>/users/std/stud/v/va/vararut</code></td>
+      <td align="left"><code>/bin/bash</code></td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<h3 id="task-9-2">Task 9</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ cd /boot/
+[<span class="kw">vararut@meno</span> boot]$ ll
+<span class="kw">total</span> 7897
+<span class="kw">-rw-r--r--</span> 1 root root   61583 Oct 10  2007 config-2.6.18-53.el5
+<span class="kw">drwxr-xr-x</span> 2 root root    1024 Apr  8  2011 grub
+<span class="kw">-rw-------</span> 1 root root 2547073 Jul 11 12:46 initrd-2.6.18-53.el5.img
+<span class="kw">-rw-r--r--</span> 1 root root 2334422 Mar  4  2008 initrd-2.6.18-53.el5kdump.img
+<span class="kw">drwx------</span> 2 root root   12288 Mar  4  2008 lost+found
+<span class="kw">-rw-r--r--</span> 1 root root   88644 Oct 10  2007 symvers-2.6.18-53.el5.gz
+<span class="kw">-rw-r--r--</span> 1 root root 1150812 Oct 10  2007 System.map-2.6.18-53.el5
+<span class="kw">-rw-r--r--</span> 1 root root 1844028 Oct 10  2007 vmlinuz-2.6.18-53.el5
+[<span class="kw">vararut@meno</span> boot]$</code></pre>
+<p><code>vmlinuz-2.6.18-53.el5</code>.</p>
+<hr />
+<h3 id="task-10-2">Task 10</h3>
+<p>There are no <code>.profile</code> or <code>.login</code> files in the home directory for this particular user configuration. Rather, there is a <code>.bash_profile</code> file in the home directory:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ cat .bash_profile <span class="kw">|</span> <span class="kw">head</span> -n 5
+<span class="co"># .bash_profile</span>
+<span class="co"># Get the aliases and functions</span>
+<span class="kw">if [</span> <span class="ot">-f</span> ~/.bashrc<span class="kw"> ]</span>; <span class="kw">then</span>
+  <span class="kw">.</span> <span class="kw">~/.bashrc</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-11-2">Task 11</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ ls -lah
+<span class="kw">total</span> 84K
+<span class="kw">drwx--x--x</span>    4 vararut ustud 4.0K Dec 11 01:35 .
+<span class="kw">drwxr-xr-x</span>  186 root    root  4.0K Nov 25 20:03 ..
+<span class="kw">-rw-------</span>    1 vararut ustud 3.5K Dec 11 00:01 .bash_history
+<span class="kw">-rw-r--r--</span>    1 vararut ustud   24 Aug 22 12:03 .bash_logout
+<span class="kw">-rw-r--r--</span>    1 vararut ustud  178 Aug 22 12:03 .bash_profile
+<span class="kw">-rw-r--r--</span>    1 vararut ustud  124 Aug 22 12:03 .bashrc
+<span class="kw">-rw-r--r--</span>    1 vararut ustud  515 Aug 22 12:03 .emacs
+<span class="kw">drwxr-xr-x</span>    3 vararut ustud 4.0K Aug 22 12:03 .kde
+<span class="kw">-rw-------</span>    1 vararut ustud   65 Dec 11 01:35 .lesshst
+<span class="kw">drwxrws--T+</span>   3 root    www   4.0K Aug 22 12:03 .public_html
+<span class="kw">-rw-------</span>    1 vararut ustud    8 Sep 25 15:13 .sh_history
+<span class="kw">-rw-------</span>    1 vararut ustud 3.6K Sep 25 14:20 .viminfo
+<span class="kw">-rw-r--r--</span>    1 vararut ustud  22K Sep 25 14:14 .zcompdump
+<span class="kw">-rw-r--r--</span>    1 vararut ustud  658 Sep 25 14:21 .zshrc
+<span class="kw">-rw-r--r--</span>    1 vararut ustud  658 Sep 25 14:18 .zshrc-old
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-12-2">Task 12</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ ls -il
+<span class="kw">total</span> 12
+<span class="kw">232512</span> drwxr-xr-x  4 vararut ustud 4096 Dec 11 01:43 personal
+<span class="kw">232515</span> drwxr-xr-x  4 vararut ustud 4096 Dec 11 01:43 professional
+<span class="kw">232510</span> drwxr-xr-x  2 vararut ustud 4096 Dec 11 01:43 temp
+[<span class="kw">vararut@meno</span> ~]$ ls -ila /
+<span class="kw">total</span> 218
+     <span class="kw">2</span> drwxr-xr-x 29 root    root  4096 Dec 11 01:05 .
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-13-2">Task 13</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ ls -ilah /boot/vmlinuz-2.6.18-53.el5
+<span class="kw">15</span> -rw-r--r-- 1 root root 1.8M Oct 10  2007 /boot/vmlinuz-2.6.18-53.el5
+[<span class="kw">vararut@meno</span> ~]$ more /boot/vmlinuz-2.6.18-53.el5
+<span class="kw">********</span> /boot/vmlinuz-2.6.18-53.el5: Not a text file ********
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-14-1">Task 14</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> labs]$ ls -ilah lab1
+<span class="kw">232528</span> -rw-r--r-- 1 vararut ustud 0 Dec 11 01:47 lab1
+[<span class="kw">vararut@meno</span> labs]$</code></pre>
+<hr />
+<h3 id="task-15-1">Task 15</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ ls /usr/include/sys/t*.h
+<span class="kw">/usr/include/sys/termios.h</span>  /usr/include/sys/timex.h
+<span class="kw">/usr/include/sys/timeb.h</span>    /usr/include/sys/ttychars.h
+<span class="kw">/usr/include/sys/time.h</span>     /usr/include/sys/ttydefaults.h
+<span class="kw">/usr/include/sys/times.h</span>    /usr/include/sys/types.h
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-16-1">Task 16</h3>
+<p>Off we go!</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ exit
+<span class="kw">logout</span>
+<span class="kw">Connection</span> to meno.lsbu.ac.uk closed.
+$ </code></pre>
+<hr />
+<h1 id="lab-4">Lab 4</h1>
+<h2 id="part-a-3">Part A</h2>
+<h3 id="task-2-4">Task 2</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ rm -rf temp/*
+[<span class="kw">vararut@meno</span> ~]$ ll temp/
+<span class="kw">total</span> 0
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-3-4">Task 3</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ cd temp/
+[<span class="kw">vararut@meno</span> temp]$ mkdir d1 d2 d3
+[<span class="kw">vararut@meno</span> temp]$ cp ../smallFile d1/
+[<span class="kw">vararut@meno</span> temp]$ ls -ilah d1/
+<span class="kw">total</span> 12K
+<span class="kw">232364</span> drwxr-xr-x 2 vararut ustud 4.0K Dec 11 11:29 .
+<span class="kw">232510</span> drwxr-xr-x 5 vararut ustud 4.0K Dec 11 11:29 ..
+<span class="kw">232532</span> -rw-r--r-- 1 vararut ustud  150 Dec 11 11:29 smallFile
+[<span class="kw">vararut@meno</span> temp]$</code></pre>
+<hr />
+<h3 id="task-4-4">Task 4</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> d2]$ ln ../d1/smallFile smallFile.hard
+[<span class="kw">vararut@meno</span> d2]$ ls -ilah
+<span class="kw">total</span> 12K
+<span class="kw">232529</span> drwxr-xr-x 2 vararut ustud 4.0K Dec 11 11:34 .
+<span class="kw">232510</span> drwxr-xr-x 5 vararut ustud 4.0K Dec 11 11:29 ..
+<span class="kw">232532</span> -rw-r--r-- 2 vararut ustud  150 Dec 11 11:29 smallFile.hard
+[<span class="kw">vararut@meno</span> d2]$ ls -ilah ../d1/
+<span class="kw">total</span> 12K
+<span class="kw">232364</span> drwxr-xr-x 2 vararut ustud 4.0K Dec 11 11:29 .
+<span class="kw">232510</span> drwxr-xr-x 5 vararut ustud 4.0K Dec 11 11:29 ..
+<span class="kw">232532</span> -rw-r--r-- 2 vararut ustud  150 Dec 11 11:29 smallFile
+[<span class="kw">vararut@meno</span> d2]$</code></pre>
+<p>They are hard links to the same file because they have the same inode.</p>
+<hr />
+<h3 id="task-5-4">Task 5</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ cat temp/d2/smallFile.hard
+<span class="kw">John</span> Doe    ECE 3.54    doe@jd.home.org     111.222.3333
+<span class="kw">James</span> Davis ECE 3.71    davis@jd.work.org   111.222.1111
+<span class="kw">Al</span> Davis    CS  2.63    davis@a.lakers.org  111.222.2222
+[<span class="kw">vararut@meno</span> ~]$ ls -l smallFile
+<span class="kw">-rw-r--r--</span> 1 vararut ustud 150 Dec 11 11:20 smallFile
+[<span class="kw">vararut@meno</span> ~]$ chmod 244 smallFile
+[<span class="kw">vararut@meno</span> ~]$ ls -l smallFile
+<span class="kw">--w-r--r--</span> 1 vararut ustud 150 Dec 11 11:20 smallFile
+[<span class="kw">vararut@meno</span> ~]$ cat smallFile
+<span class="kw">cat</span>: smallFile: Permission denied
+[<span class="kw">vararut@meno</span> ~]$ cat temp/d2/smallFile.hard
+<span class="kw">John</span> Doe    ECE 3.54    doe@jd.home.org     111.222.3333
+<span class="kw">James</span> Davis ECE 3.71    davis@jd.work.org   111.222.1111
+<span class="kw">Al</span> Davis    CS  2.63    davis@a.lakers.org  111.222.2222
+[<span class="kw">vararut@meno</span> ~]$ ls -l temp/d2/smallFile.hard
+<span class="kw">-rw-r--r--</span> 2 vararut ustud 150 Dec 11 11:29 temp/d2/smallFile.hard
+[<span class="kw">vararut@meno</span> ~]$ chmod 644 smallFile
+[<span class="kw">vararut@meno</span> ~]$ ls -l smallFile
+<span class="kw">-rw-r--r--</span> 1 vararut ustud 150 Dec 11 11:20 smallFile
+[<span class="kw">vararut@meno</span> ~]$ cat smallFile
+<span class="kw">John</span> Doe    ECE 3.54    doe@jd.home.org     111.222.3333
+<span class="kw">James</span> Davis ECE 3.71    davis@jd.work.org   111.222.1111
+<span class="kw">Al</span> Davis    CS  2.63    davis@a.lakers.org  111.222.2222
+[<span class="kw">vararut@meno</span> ~]$ cp smallFile smallFile.bak
+[<span class="kw">vararut@meno</span> ~]$ rm smallFile
+[<span class="kw">vararut@meno</span> ~]$ cat temp/d2/smallFile.hard
+<span class="kw">John</span> Doe    ECE 3.54    doe@jd.home.org     111.222.3333
+<span class="kw">James</span> Davis ECE 3.71    davis@jd.work.org   111.222.1111
+<span class="kw">Al</span> Davis    CS  2.63    davis@a.lakers.org  111.222.2222
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<p>It makes sense, since while <code>~/smallFile</code> no longer has read permissions, a hard link pointing to the same inode can have a completely independent set of permissions.</p>
+<p>The file can still be displayed upon deleting one of its hard links. A file is considered completely deleted from the filesystem only when its number of hard links reaches 0.</p>
+<hr />
+<h3 id="task-6-3">Task 6</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> d2]$ ln smallFile.hard ../d1/smallFile
+[<span class="kw">vararut@meno</span> d2]$ ln -s ../d1/smallFile smallFile.soft
+[<span class="kw">vararut@meno</span> d2]$ ls -ilah
+<span class="kw">total</span> 12K
+<span class="kw">232529</span> drwxr-xr-x 2 vararut ustud 4.0K Dec 11 11:59 .
+<span class="kw">232510</span> drwxr-xr-x 5 vararut ustud 4.0K Dec 11 11:29 ..
+<span class="kw">232532</span> -rw-r--r-- 2 vararut ustud  150 Dec 11 11:29 smallFile.hard
+<span class="kw">232528</span> lrwxrwxrwx 1 vararut ustud   15 Dec 11 11:59 smallFile.soft -<span class="kw">&gt;</span> ../d1/smallFile
+[<span class="kw">vararut@meno</span> d2]$</code></pre>
+<p>They are different files because they point to different inodes. The size of the symlink is only 15 bytes.</p>
+<hr />
+<h3 id="task-7-4">Task 7</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> d2]$ cat smallFile.soft
+<span class="kw">John</span> Doe    ECE 3.54    doe@jd.home.org     111.222.3333
+<span class="kw">James</span> Davis ECE 3.71    davis@jd.work.org   111.222.1111
+<span class="kw">Al</span> Davis    CS  2.63    davis@a.lakers.org  111.222.2222
+[<span class="kw">vararut@meno</span> d2]$ chmod 244 ../d1/smallFile
+[<span class="kw">vararut@meno</span> d2]$ cat smallFile.soft
+<span class="kw">cat</span>: smallFile.soft: Permission denied
+[<span class="kw">vararut@meno</span> d2]$ chmod 644 ../d1/smallFile
+[<span class="kw">vararut@meno</span> d2]$ cat smallFile.soft
+<span class="kw">John</span> Doe    ECE 3.54    doe@jd.home.org     111.222.3333
+<span class="kw">James</span> Davis ECE 3.71    davis@jd.work.org   111.222.1111
+<span class="kw">Al</span> Davis    CS  2.63    davis@a.lakers.org  111.222.2222
+[<span class="kw">vararut@meno</span> d2]$ cat smallFile.soft
+<span class="kw">John</span> Doe    ECE 3.54    doe@jd.home.org     111.222.3333
+<span class="kw">James</span> Davis ECE 3.71    davis@jd.work.org   111.222.1111
+<span class="kw">Al</span> Davis    CS  2.63    davis@a.lakers.org  111.222.2222
+[<span class="kw">vararut@meno</span> d2]$ rm ../d1/smallFile
+[<span class="kw">vararut@meno</span> d2]$ cat smallFile.soft
+<span class="kw">cat</span>: smallFile.soft: No such file or directory
+[<span class="kw">vararut@meno</span> d2]$ ls
+<span class="kw">smallFile.hard</span>  smallFile.soft
+[<span class="kw">vararut@meno</span> d2]$</code></pre>
+<p>It makes sense, because a symbolic link is just a pointer to a specific address in the filesystem. If the other end dissapears, the filesystem reacts accordingly.</p>
+<hr />
+<h3 id="task-8-3">Task 8</h3>
+<p>Off we go!</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ exit
+<span class="kw">logout</span>
+<span class="kw">Connection</span> to meno.lsbu.ac.uk closed.
+$ </code></pre>
+<hr />
+<h1 id="lab-5">Lab 5</h1>
+<h2 id="part-a-4">Part A</h2>
+<h3 id="task-2-5">Task 2</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ ps -e -o uid,pid,ppid,pri,ni,cmd <span class="kw">|</span> <span class="kw">grep</span> inet
+<span class="kw">0</span> 15315     1  24   0 xinetd -stayalive -pidfile /var/run/xinetd.pid
+<span class="kw">171224</span> 16604 26685 21   0 grep inet
+[<span class="kw">vararut@meno</span> ~]$ ps -e -o uid,pid,ppid,pri,ni,cmd <span class="kw">|</span> <span class="kw">grep</span> sched
+<span class="kw">171224</span> 16612 26685 21   0 grep sched
+[<span class="kw">vararut@meno</span> ~]$ ps -e -o uid,pid,ppid,pri,ni,cmd <span class="kw">|</span> <span class="kw">grep</span> cron
+<span class="kw">0</span>  2727     1  24   0 crond
+<span class="kw">171224</span> 16615 26685 21   0 grep cron
+[<span class="kw">vararut@meno</span> ~]$ ps -e -o uid,pid,ppid,pri,ni,cmd <span class="kw">|</span> <span class="kw">grep</span> inetd
+<span class="kw">0</span> 15315     1  24   0 xinetd -stayalive -pidfile /var/run/xinetd.pid
+<span class="kw">171224</span> 16623 26685 21   0 grep inetd
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-3-5">Task 3</h3>
+<p>The parent for all of them is <code>root</code>.</p>
+<table>
+  <thead>
+    <tr class="header">
+      <th align="left">Process</th>
+      <th align="left">PPID</th>
+      <th align="left">Priority</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="odd">
+      <td align="left"><code>init</code></td>
+      <td align="left">1</td>
+      <td align="left">24</td>
+    </tr>
+    <tr class="even">
+      <td align="left"><code>crond</code></td>
+      <td align="left">1</td>
+      <td align="left">24</td>
+    </tr>
+    <tr class="odd">
+      <td align="left"><code>xinetd</code></td>
+      <td align="left">1</td>
+      <td align="left">24</td>
+    </tr>
+  </tbody>
+</table>
+<hr />
+<h3 id="task-4-5">Task 4</h3>
+<p><code>grep -v grep</code> used to eliminate extra entries.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ ps aux <span class="kw">|</span> <span class="kw">grep</span> httpd <span class="kw">|</span> <span class="kw">grep</span> -cv grep
+<span class="kw">9</span>
+[<span class="kw">vararut@meno</span> ~]$ ps -e -o pid,cmd <span class="kw">|</span> <span class="kw">grep</span> httpd <span class="kw">|</span> <span class="kw">grep</span> -v grep
+<span class="kw">2577</span> /usr/sbin/httpd
+<span class="kw">2578</span> /usr/sbin/httpd
+<span class="kw">2579</span> /usr/sbin/httpd
+<span class="kw">2580</span> /usr/sbin/httpd
+<span class="kw">2581</span> /usr/sbin/httpd
+<span class="kw">2582</span> /usr/sbin/httpd
+<span class="kw">2583</span> /usr/sbin/httpd
+<span class="kw">2589</span> /usr/sbin/httpd
+<span class="kw">22710</span> /usr/sbin/httpd
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-5-5">Task 5</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ ps aux <span class="kw">|</span> <span class="kw">grep</span> -w <span class="st">&quot;/bin/.*sh&quot;</span> <span class="kw">|</span> <span class="kw">grep</span> -v grep
+<span class="kw">root</span>      2554  0.0  0.0  65900  1252 ?        S    Aug21   0:00 /bin/sh /usr/bin/mysqld_safe --defaults-file=/etc/my.cnf --pid-file=/var/run/mysqld/mysqld.pid --log-error=/var/log/mysqld.log
+<span class="kw">root</span>      2605  0.0  0.0  65900  1300 ?        S    Aug21  28:42 /bin/bash /usr/local/cams2/bin/cams_watcher.sh
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-6-4">Task 6</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">top</span> - 15:22:55 up 112 days,  2:41,  5 users,  load average: 0.02, 0.03, 0.00
+<span class="kw">Tasks</span>: 129 total,   1 running, 122 sleeping,   6 stopped,   0 zombie
+<span class="kw">Cpu</span>(s)<span class="kw">:</span>  0.3%us,  0.5%sy,  0.0%ni, 99.0%id,  0.0%wa,  0.2%hi,  0.0%si,  0.0%st
+<span class="kw">Mem</span>:   3735588k total,  3688652k used,    46936k free,  1467928k buffers
+<span class="kw">Swap</span>:  2040212k total,      104k used,  2040108k free,  1028888k cached
+<span class="kw">PID</span> USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+<span class="kw">19748</span> vararut   15   0 12716 1072  792 R    1  0.0   0:00.65 top
+<span class="kw">2584</span> mysql     15   0  675m 106m 4372 S    0  2.9  39:55.50 mysqld
+<span class="kw">2605</span> root      18   0 65900 1300 1040 S    0  0.0  28:42.98 cams_watcher.sh
+<span class="kw">26684</span> vararut   15   0 97.9m 2172 1244 S    0  0.1   0:01.16 sshd
+<span class="kw">1</span> root      15   0 10312  684  568 S    0  0.0   0:20.31 init
+<span class="kw">2</span> root      RT   0     0    0    0 S    0  0.0  33:51.07 migration/0
+<span class="kw">3</span> root      34  19     0    0    0 S    0  0.0   0:02.19 ksoftirqd/0
+<span class="kw">4</span> root      RT   0     0    0    0 S    0  0.0   0:01.10 watchdog/0
+<span class="kw">5</span> root      RT   0     0    0    0 S    0  0.0  20:24.08 migration/1
+<span class="kw">6</span> root      34  19     0    0    0 S    0  0.0   0:02.94 ksoftirqd/1
+<span class="kw">7</span> root      RT   0     0    0    0 S    0  0.0   0:01.36 watchdog/1
+<span class="kw">8</span> root      10  -5     0    0    0 S    0  0.0  76:07.80 events/0
+<span class="kw">9</span> root      10  -5     0    0    0 S    0  0.0   3:14.90 events/1
+<span class="kw">10</span> root      10  -5     0    0    0 S    0  0.0   0:00.00 khelper
+<span class="kw">41</span> root      16  -5     0    0    0 S    0  0.0   0:00.00 kthread
+<span class="kw">46</span> root      10  -5     0    0    0 S    0  0.0   0:07.14 kblockd/0
+<span class="kw">47</span> root      10  -5     0    0    0 S    0  0.0   0:04.43 kblockd/1
+<span class="kw">48</span> root      14  -5     0    0    0 S    0  0.0   0:00.00 kacpid</code></pre>
+<p><code>top</code> refreshes once every 3 seconds. 1 running process, 122 sleeping.</p>
+<hr />
+<h3 id="task-8-4">Task 8</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ sleep 3600 <span class="kw">&amp;&amp;</span> <span class="kw">echo</span> <span class="st">&quot;Time for Lunch\!&quot;</span> <span class="kw">&amp;</span>
+[<span class="kw">1</span>] 19956
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-9-3">Task 9</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ find ~ -name <span class="st">&quot;foobar&quot;</span> <span class="kw">1&gt;</span>find.out <span class="kw">2&gt;</span>/dev/null <span class="kw">&amp;</span> <span class="kw">sort</span> -nrk4 smallFile <span class="kw">1&gt;</span>sort.out <span class="kw">2&gt;</span>/dev/null <span class="kw">&amp;</span>
+[<span class="kw">1</span>] 22999
+[<span class="kw">2</span>] 22300
+[<span class="kw">vararut@meno</span> ~]$ ll
+<span class="kw">total</span> 20
+<span class="kw">-rw-r--r--</span> 1 vararut ustud    0 Dec 11 21:03 find.out
+<span class="kw">drwxr-xr-x</span> 4 vararut ustud 4096 Dec 11 11:18 personal
+<span class="kw">drwxr-xr-x</span> 4 vararut ustud 4096 Dec 11 11:18 professional
+<span class="kw">-rw-r--r--</span> 1 vararut ustud  150 Dec 11 11:47 smallFile
+<span class="kw">-rw-r--r--</span> 1 vararut ustud  150 Dec 11 21:03 sort.out
+<span class="kw">drwxr-xr-x</span> 5 vararut ustud 4096 Dec 11 11:29 temp
+[<span class="kw">vararut@meno</span> ~]$ cat find.out
+[<span class="kw">vararut@meno</span> ~]$ cat sort.out
+<span class="kw">James</span> Davis ECE 3.71    davis@jd.work.org   111.222.1111
+<span class="kw">John</span> Doe    ECE 3.54    doe@jd.home.org     111.222.3333
+<span class="kw">Al</span> Davis    CS  2.63    davis@a.lakers.org  111.222.2222
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-10-3">Task 10</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ kill 12345
+<span class="kw">-bash</span>: kill: (12345) <span class="kw">-</span> No such process
+[<span class="kw">vararut@meno</span> ~]$ kill %2
+<span class="kw">-bash</span>: kill: %2: no such job
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-11-3">Task 11</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ date <span class="kw">&amp;</span> <span class="kw">uname</span> -a <span class="kw">&amp;</span> <span class="kw">who</span> <span class="kw">&amp;</span> <span class="kw">ps</span> <span class="kw">&amp;</span>
+[<span class="kw">1</span>] 23108
+[<span class="kw">2</span>] 23109
+[<span class="kw">3</span>] 23110
+[<span class="kw">4</span>] 23111
+<span class="kw">Thu</span> Dec 11 21:10:00 GMT 2014
+<span class="kw">Linux</span> meno.lsbu.ac.uk 2.6.18-53.el5 <span class="co">#1 SMP Wed Oct 10 16:34:19 EDT 2007 x86_64 x86_64 x86_64 GNU/Linux</span>
+<span class="kw">-bash</span>: echo: write error: Interrupted system call
+[<span class="kw">1</span>]   Done                    date
+[<span class="kw">vararut@meno</span> ~]$ sagayarl pts/11       2014-12-11 13:15 (0543f9f8.skybroadband.com)
+<span class="kw">richj3</span>   pts/12       2014-12-11 20:36 (cpc2-slam6-2-0-cust66.2-4.cable.virginm.net)
+<span class="kw">gharibr</span>  pts/15       2014-12-11 15:34 (bus-2402603.lsbu.ac.uk)
+<span class="kw">sekyewaj</span> pts/17       2014-12-11 10:06 (90.198.211.30)
+<span class="kw">vararut</span>  pts/18       2014-12-11 20:57 (188.226.201.122)
+<span class="kw">PID</span> TTY          TIME CMD
+<span class="kw">22440</span> pts/18   00:00:00 bash
+<span class="kw">23111</span> pts/18   00:00:00 ps
+[<span class="kw">2</span>]   Done                    uname -a
+[<span class="kw">3</span>]-  Done                    who
+[<span class="kw">4</span>]+  Done                    ps
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-12-3">Task 12</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ find / -inum 123456 <span class="kw">1&gt;</span>find.out <span class="kw">2&gt;</span>/dev/null <span class="kw">&amp;</span>
+[<span class="kw">1</span>] 23194
+[<span class="kw">vararut@meno</span> ~]$ kill %%
+[<span class="kw">1</span>]+  Terminated              find / -inum 123456 <span class="kw">&gt;</span> find.out <span class="kw">2&gt;</span> /dev/null
+[<span class="kw">vararut@meno</span> ~]$ find ~ -inum 123456 <span class="kw">1&gt;</span>find.out <span class="kw">2&gt;</span>/dev/null <span class="kw">&amp;</span>
+[<span class="kw">1</span>] 23200
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-13-3">Task 13</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ pstree
+<span class="kw">init</span>─┬─acpid
+     ├─<span class="kw">atd</span>
+     ├─<span class="kw">auditd</span>─┬─python
+     │        └─<span class="dt">{auditd}</span>
+     ├─<span class="kw">cams_watcher.sh</span>───sleep
+     ├─<span class="kw">crond</span>
+     ├─<span class="kw">dbus-daemon</span>
+     ├─<span class="kw">events/0</span>
+     ├─<span class="kw">events/1</span>
+     ├─<span class="kw">13*</span>[free]
+     ├─<span class="kw">gdm-binary</span>───gdm-binary─┬─Xorg
+     │                         └─<span class="kw">gdmgreeter</span>
+     ├─<span class="kw">generate</span>
+     ├─<span class="kw">gpm</span>
+     ├─<span class="kw">hald</span>───hald-runner─┬─hald-addon-acpi
+     │                    ├─<span class="kw">hald-addon-keyb</span>
+     │                    └─<span class="kw">hald-addon-stor</span>
+     ├─<span class="kw">hcid</span>
+     ├─<span class="kw">httpd</span>───8*[httpd]
+     ├─<span class="kw">irqbalance</span>
+     ├─<span class="kw">jsvc</span>───jsvc───18*[<span class="dt">{jsvc}</span>]
+     ├─<span class="kw">khelper</span>
+     ├─<span class="kw">klogd</span>
+     ├─<span class="kw">krfcommd</span>
+     ├─<span class="kw">ksoftirqd/0</span>
+     ├─<span class="kw">ksoftirqd/1</span>
+     ├─<span class="kw">kthread</span>─┬─aio/0
+     │         ├─<span class="kw">aio/1</span>
+     │         ├─<span class="kw">ata/0</span>
+     │         ├─<span class="kw">ata/1</span>
+     │         ├─<span class="kw">ata_aux</span>
+     │         ├─<span class="kw">cqueue/0</span>
+     │         ├─<span class="kw">cqueue/1</span>
+     │         ├─<span class="kw">kacpid</span>
+     │         ├─<span class="kw">kauditd</span>
+     │         ├─<span class="kw">kblockd/0</span>
+     │         ├─<span class="kw">kblockd/1</span>
+     │         ├─<span class="kw">khubd</span>
+     │         ├─<span class="kw">5*</span>[kjournald]
+     │         ├─<span class="kw">kmpathd/0</span>
+     │         ├─<span class="kw">kmpathd/1</span>
+     │         ├─<span class="kw">kpsmoused</span>
+     │         ├─<span class="kw">kseriod</span>
+     │         ├─<span class="kw">kswapd0</span>
+     │         ├─<span class="kw">2*</span>[pdflush]
+     │         ├─<span class="kw">scsi_eh_0</span>
+     │         └─<span class="kw">vmmemctl</span>
+     ├─<span class="kw">ls</span>
+     ├─<span class="kw">migration/0</span>
+     ├─<span class="kw">migration/1</span>
+     ├─<span class="kw">6*</span>[mingetty]
+     ├─<span class="kw">mysqld_safe</span>───mysqld───17*[<span class="dt">{mysqld}</span>]
+     ├─<span class="kw">ntpd</span>
+     ├─<span class="kw">portmap</span>
+     ├─<span class="kw">sdpd</span>
+     ├─<span class="kw">2*</span>[sendmail]
+     ├─<span class="kw">sshd</span>─┬─sshd───sshd───bash───4*[generate]
+     │      ├─<span class="kw">sshd</span>───sshd───bash
+     │      ├─<span class="kw">sshd</span>───sshd───bash───mysql
+     │      ├─<span class="kw">sshd</span>───sshd───bash─┬─more
+     │      │                    ├─<span class="kw">rusers</span>
+     │      │                    └─<span class="kw">4*</span>[telnet]
+     │      └─<span class="kw">sshd</span>───sshd───bash───pstree
+     ├─<span class="kw">syslogd</span>
+     ├─<span class="kw">udevd</span>
+     ├─<span class="kw">vmtoolsd</span>
+     ├─<span class="kw">watchdog/0</span>
+     ├─<span class="kw">watchdog/1</span>
+     ├─<span class="kw">xfs</span>
+     ├─<span class="kw">xinetd</span>
+     └─<span class="kw">yum-updatesd</span>
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-14-2">Task 14</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ ps -o pid,ppid,pgid,sid,comm
+<span class="kw">PID</span>  PPID  PGID   SID COMMAND
+<span class="kw">22440</span> 22438 22440 22440 bash
+<span class="kw">23397</span> 22440 23397 22440 ps
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-15-2">Task 15</h3>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ ps -o pid,ppid,pgid,sid,comm <span class="kw">&amp;</span>
+[<span class="kw">1</span>] 23428
+[<span class="kw">vararut@meno</span> ~]$   PID  PPID  PGID   SID COMMAND
+<span class="kw">22440</span> 22438 22440 22440 bash
+<span class="kw">23428</span> 22440 23428 22440 ps
+[<span class="kw">1</span>]+  Done                    ps -o pid,ppid,pgid,sid,comm
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+<hr />
+<h3 id="task-16-2">Task 16</h3>
+<p>Off we go!</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ exit
+<span class="kw">logout</span>
+<span class="kw">Connection</span> to meno.lsbu.ac.uk closed.
+$ </code></pre>
+<hr />
+<h1 id="lab-6">Lab 6</h1>
+<h3 id="task-1-1">Task 1</h3>
+<p>Good examples of multithreading:</p>
+<ol style="list-style-type: decimal">
+  <li><p>Strategy games that can run the rendering logic independently from the AI pathing algorithms. E.g. Starcraft 2.</p></li>
+  <li><p>Video rendering applications, as each frame can be rendered individually. E.g. Final Cut Pro.</p></li>
+</ol>
+<p>Single-threaded applications:</p>
+<ol style="list-style-type: decimal">
+  <li><p>Node.js uses a single-threaded event loop and handles I/O with asynchronous callbacks.</p></li>
+  <li><p>Applications that perform simple calculations on small sample sizes. E.g. a tax calculator.</p></li>
+</ol>
+<hr />
+<h1 id="lab-7">Lab 7</h1>
+<p>The <code>hello.sh</code> command does not work since the current directory is not part of the shell <code>$PATH</code>. As such, the shell is not taking it into consideration when considering valid program names. To get the example to work, <code>./hello.sh</code> should do the trick.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">[<span class="kw">vararut@meno</span> ~]$ vi hashcheck.pl
+[<span class="kw">vararut@meno</span> ~]$ perl hashcheck.pl
+<span class="kw">This</span> is a hash character: <span class="co">#</span>
+<span class="kw">This</span> is a print statement...
+[<span class="kw">vararut@meno</span> ~]$</code></pre>
+  </body>
+</html>
